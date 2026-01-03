@@ -1,0 +1,4658 @@
+<!--
+// Version 1.0 of 'Knewest TDMX Probabilities'.
+// Copyright (Boost Software License 1.0) 2025-2026 Knew
+// GitHub: https://github.com/Knewest
+// Support server: https://discord.gg/NqqqzajfK4
+-->
+
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Knewest TDMX Probabilities</title>
+  <style>
+   :root{--bg:#0a0a0a;--panel:#141414;--panel2:#0f0f0f;--text:#e0e0e0;--muted:#888888;--line:transparent;--accent:#b0b0b0;--warn:#ffcf6a;--warn-orange:#f59e0b;--dim:rgba(224,224,224,0.45);}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);}
+    header{padding:16px 16px 10px;border-bottom:none;background:var(--bg);}
+    h1{margin:0 0 6px;font-size:18px;font-weight:800;}
+    .sub{margin:0;color:var(--muted);font-size:13px;line-height:1.35;}
+    main{padding:16px;display:grid;gap:12px;}
+    .card{background:var(--panel);border:none;border-radius:10px;padding:12px;}
+    .row{display:flex;flex-wrap:wrap;gap:10px;align-items:end;}
+    label{display:grid;gap:6px;font-size:12px;color:var(--muted);}
+    input[type="number"],input[type="text"],select{background:var(--panel2);border:none;color:var(--text);border-radius:8px;padding:8px 10px;min-width:160px;outline:none;}
+    .toggle{display:inline-flex;gap:8px;align-items:center;padding:8px 10px;border:none;border-radius:8px;background:var(--panel2);user-select:none;}
+    .toggle input{transform:translateY(1px);}
+    .note{color:var(--muted);font-size:12px;margin:8px 0 0;line-height:1.35;}
+    .warn{color:var(--warn);font-size:12px;margin:8px 0 0;line-height:1.35;}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}
+    .dim{color:var(--dim);} 
+
+    .pill{padding:2px 8px;border:none;border-radius:999px;background:var(--panel2);}
+
+    details.mathBox{margin-top:10px;background:var(--panel2);border:none;border-radius:10px;padding:10px;}
+    details.mathBox summary{cursor:pointer;font-weight:800;color:#c0c0c0;}
+    .mathGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-top:10px;}
+    .eqCard{border:none;border-radius:10px;padding:10px;background:#0c0c0c;}
+    .eqTitle{font-size:12px;font-weight:800;color:#c0c0c0;margin-bottom:6px;}
+    math{font-size:14px;}
+
+    .crate{border:none;border-radius:10px;overflow:hidden;background:var(--panel);margin-bottom:16px;}
+    .crateHead{padding:10px 12px;border-bottom:none;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:#181818;}
+    .crateTitle{font-size:14px;font-weight:800;}
+    .crateMeta{color:var(--muted);font-size:12px;display:flex;gap:10px;flex-wrap:wrap;line-height:1.3;}
+
+    table{width:100%;border-collapse:collapse;font-size:12px;}
+    th,td{padding:9px 10px;border-bottom:none;vertical-align:top;}
+    th{text-align:left;position:sticky;top:0;background:#181818;z-index:1;font-weight:800;color:#c0c0c0;}
+
+    .tip{border-bottom:1px dotted #555555;cursor:help;position:relative;display:inline-block;}
+    .tip::after{content:attr(data-tip);position:absolute;left:0;bottom:calc(100% + 8px);min-width:260px;max-width:520px;white-space:normal;background:#0c0c0c;border:none;color:var(--text);padding:8px 10px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.5);opacity:0;pointer-events:none;transform:translateY(2px);transition:opacity 120ms ease,transform 120ms ease;z-index:5;line-height:1.35;}
+    .tip:hover::after{opacity:1;transform:translateY(0);}
+
+    details.rowDetails summary{cursor:pointer;color:var(--accent);}  
+    .rowDetailBox{margin-top:8px;border:none;border-radius:10px;background:var(--panel2);padding:10px;}
+    .milestoneGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:8px;}
+    .milestone{border:none;border-radius:10px;background:#0c0c0c;padding:8px;}
+    .milestone b{color:#c0c0c0;}
+
+    footer{padding:14px 16px;border-top:none;color:var(--muted);font-size:12px;}
+    a{color:var(--accent);}
+    .crateTotals{padding:10px 12px;color:var(--muted);font-size:12px;border-top:none;background:rgba(0,0,0,0.85);display:flex;gap:10px;flex-wrap:wrap;font-weight:700;}
+
+    .bad{
+      color:var(--warn-orange) !important;
+      font-weight:800 !important;
+    }
+
+    #crates{min-height:40px;}
+
+
+  .crate.total-warning {
+    border-left:3px solid #f59e0b;
+    background:rgba(245, 158, 11, 0.08);
+  }
+
+  .crate.total-warning .crateHead {
+    background-color:rgba(245, 158, 11, 0.12);
+  }
+
+  .crate.total-warning .crateTotals {
+    background:rgba(245, 158, 11, 0.10);
+  }
+
+  .crate.total-warning .crateTitle::after {
+    content: " ⚠️";
+    color:var(--warn-orange);
+  }
+
+  /* Rarity Gradients */
+  .rarity-Common { background: linear-gradient(90deg, #B9B9B9, #878787); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+  .rarity-Rare { background: linear-gradient(90deg, #FBFB00, #BCBC00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+  .rarity-Epic { background: linear-gradient(90deg, #FA0000, #BB0000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+  .rarity-Legendary { background: linear-gradient(90deg, #0202CE, #02088C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+  .rarity-Godly { background: linear-gradient(90deg, #09D509, #099009); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+  .rarity-Limited { background: linear-gradient(90deg, #D14BD1, #9F3E9F); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+  .rarity-Special { background: linear-gradient(90deg, #FE9F06, #AF6D01); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+  .rarity-Trophy { background: linear-gradient(90deg, #ECA600, #BC9800); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+
+  
+
+    /* Sticky floating controls panel */
+    #controlsPanel {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--panel);
+      transition: all 0.3s ease;
+      overflow: visible;
+    }
+
+    #controlsPanel.hidden .card-content {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      padding-top: 0;
+      padding-bottom: 0;
+      margin: 0;
+    }
+
+    #controlsPanel .card-content {
+      max-height: 1000px;
+      opacity: 1;
+      transition: all 0.3s ease;
+    }
+
+    .controls-toggle {
+      position: sticky;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--panel);
+      border: none;
+      border-radius: 0 0 10px 10px;
+      padding: 6px 20px;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 18px;
+      line-height: 1;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 101;
+      display: block;
+      margin: 0 auto;
+      width: fit-content;
+    }
+
+    .controls-toggle:hover {
+      background: var(--panel2);
+      color: var(--accent);
+    }
+    </style>
+</head>
+<body>
+
+<header>
+  <h1>Knewest TDMX Probabilities</h1>
+  <p class="sub">Made to better understand the RNG probability of the game.</p>
+</header>
+
+<main>
+  <section class="card" id="controlsPanel">
+    <button class="controls-toggle" id="controlsToggle" onclick="toggleControls()">▼</button>
+    <div class="card-content">
+
+    <div class="row">
+      <label>
+        <span class="tip" data-tip="N = how many opens you plan.">Planned opens (N)</span>
+        <input id="rollsN" type="number" min="1" step="1" value="100" />
+      </label>
+
+      <label>
+        <span class="tip" data-tip="Used to estimate time.">Opens per second</span>
+        <select id="opensPerSec"><option value="1">1</option><option value="3">3</option></select>
+      </label>
+
+      <span class="toggle">
+        <input id="useGH" type="checkbox" />
+        <label for="useGH" style="margin:0;color:var(--text);gap:0;">
+          <span class="tip" data-tip="When on: p = p_GH. When off: p = p_Base.">Use Godly Hunter odds</span>
+        </label>
+      </span>
+
+      <label>
+        <span class="tip" data-tip="Multiplies the selected odds (Base or Godly Hunter) before doing all calculations.">Luck potions</span>
+        <select id="luckMod">
+          <option value="1" selected>None // 0% // x1.00</option>
+          <option value="1.1">Luck I // 10% // x1.10</option>
+          <option value="1.2">Luck II // 20% // x1.20</option>
+          <option value="1.3">Luck III // 30% // x1.30</option>
+        </select>
+      </label>
+      <span class="toggle">
+        <input id="showAdvanced" type="checkbox" />
+        <label for="showAdvanced" style="margin:0;color:var(--text);gap:0;">
+          <span class="tip" data-tip="Shows milestone boxes (10/25/50/75/90/95% chance)."><span>Advanced</span></span>
+        </label>
+      </span>
+
+      <label>
+        <span class="tip" data-tip="Filter by crate name.">Filter crates</span>
+        <input id="filterText" type="text" placeholder="Search..." />
+      </label>
+    </div>
+
+    <details class="mathBox">
+      <summary>Equations used (click)</summary>
+      <div class="mathGrid">
+        <div class="eqCard"><div class="eqTitle">Percent to probability</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>p</mi><mo>=</mo><mfrac><mrow><mi>p</mi><mo>%</mo></mrow><mn>100</mn></mfrac></mrow></math>
+        </div>
+        <div class="eqCard"><div class="eqTitle">Chance in <span id="nLabelEq">N</span> opens (<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>N</mi></math>)</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>P</mi><mo>(</mo><mo>≥</mo><mn>1</mn><mo>)</mo><mo>=</mo><mn>1</mn><mo>−</mo><msup><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow><mi>N</mi></msup></mrow></math>
+        </div>
+        <div class="eqCard"><div class="eqTitle">Milestone opens for chance <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>g</mi></math></div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>N</mi><mo>(</mo><mi>g</mi><mo>)</mo><mo>=</mo><mo>⌈</mo><mfrac><mrow><mi>ln</mi><mo>(</mo><mn>1</mn><mo>−</mo><mi>g</mi><mo>)</mo></mrow><mrow><mi>ln</mi><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow></mfrac><mo>⌉</mo></mrow></math>
+        </div>
+			<div class="eqCard">
+			  <div class="eqTitle">Base to Godly Hunter difference</div> 
+				<math xmlns="http://www.w3.org/1998/Math/MathML">
+				  <mrow>
+					<mi>Δ</mi>
+					<mo>=</mo>
+					<msub>
+					  <mi>p</mi>
+					  <mi>GH</mi>
+					</msub>
+					<mo>−</mo>
+					<msub>
+					  <mi>p</mi>
+					  <mi>Base</mi>
+					</msub>
+				  </mrow>
+				</math>
+				<math xmlns="http://www.w3.org/1998/Math/MathML">
+				  <mrow>
+					<mi>m</mi>
+					<mo>=</mo>
+					<mfrac>
+					  <msub>
+						<mi>p</mi>
+						<mi>GH</mi>
+					  </msub>
+					  <msub>
+						<mi>p</mi>
+						<mi>Base</mi>
+					  </msub>
+					</mfrac>
+				  </mrow>
+				</math>.
+			</div>
+      </div>
+      <p class="note">The toggle changes <span class="mono"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi></math></span> (the probability used in every formula).<br>Luck potions multiply <span class="mono"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi></math></span> on top of Base/Godly Hunter odds.</p>
+    </details>
+
+    <p id="status" class="note"></p>
+    <p id="warnTotals" class="warn" style="display:none;"></p>
+  
+    </div>
+  </section>
+
+  <section id="crates"></section>
+</main>
+
+<script>
+  const DATA = [
+  {
+    "crate_id": "250 Candy Canes 'Winter 2025' crate",
+    "crate_name": "Winter 2025",
+    "category": "Event Shop",
+    "cost": "250",
+    "currency": "Candy Canes",
+    "item_name": "Blizzard's Knife",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 16.98,
+    "sort_order": 1
+  },
+  {
+    "crate_id": "250 Candy Canes 'Winter 2025' crate",
+    "crate_name": "Winter 2025",
+    "category": "Event Shop",
+    "cost": "250",
+    "currency": "Candy Canes",
+    "item_name": "Snow Camo Knife",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 1
+  },
+  {
+    "crate_id": "250 Candy Canes 'Winter 2025' crate",
+    "crate_name": "Winter 2025",
+    "category": "Event Shop",
+    "cost": "250",
+    "currency": "Candy Canes",
+    "item_name": "Snow Camo Knife",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 1
+  },
+  {
+    "crate_id": "250 Candy Canes 'Winter 2025' crate",
+    "crate_name": "Winter 2025",
+    "category": "Event Shop",
+    "cost": "250",
+    "currency": "Candy Canes",
+    "item_name": "Glacial Marble Knife",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 1
+  },
+  {
+    "crate_id": "250 Candy Canes 'Winter 2025' crate",
+    "crate_name": "Winter 2025",
+    "category": "Event Shop",
+    "cost": "250",
+    "currency": "Candy Canes",
+    "item_name": "Glacial Marble Knife",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 1
+  },
+  {
+    "crate_id": "250 Candy Canes 'Winter 2025' crate",
+    "crate_name": "Winter 2025",
+    "category": "Event Shop",
+    "cost": "250",
+    "currency": "Candy Canes",
+    "item_name": "Blizzard Swirl Gun",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 10.0,
+    "p_gh_pct": 10.0,
+    "sort_order": 1
+  },
+  {
+    "crate_id": "250 Candy Canes 'Winter 2025' crate",
+    "crate_name": "Winter 2025",
+    "category": "Event Shop",
+    "cost": "250",
+    "currency": "Candy Canes",
+    "item_name": "Blizzard Swirl Knife",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 9.9,
+    "p_gh_pct": 9.9,
+    "sort_order": 1
+  },
+  {
+    "crate_id": "250 Candy Canes 'Winter 2025' crate",
+    "crate_name": "Winter 2025",
+    "category": "Event Shop",
+    "cost": "250",
+    "currency": "Candy Canes",
+    "item_name": "Glaciator",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 1
+  },
+  {
+    "crate_id": "250 Candy Canes 'Winter 2025' crate",
+    "crate_name": "Winter 2025",
+    "category": "Event Shop",
+    "cost": "250",
+    "currency": "Candy Canes",
+    "item_name": "Frosted Santa",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 1
+  },
+  {
+    "crate_id": "250 Candy Canes 'Winter 2025' crate",
+    "crate_name": "Winter 2025",
+    "category": "Event Shop",
+    "cost": "250",
+    "currency": "Candy Canes",
+    "item_name": "Frozen Halberd",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.11,
+    "sort_order": 1
+  },
+  {
+    "crate_id": "10 Coins 'Ancalagon' crate",
+    "crate_name": "Ancalagon",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Ice Blade",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 50.89,
+    "p_gh_pct": 50.88,
+    "sort_order": 2
+  },
+  {
+    "crate_id": "10 Coins 'Ancalagon' crate",
+    "crate_name": "Ancalagon",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Ice Shooter",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 49.0,
+    "p_gh_pct": 49.0,
+    "sort_order": 2
+  },
+  {
+    "crate_id": "10 Coins 'Ancalagon' crate",
+    "crate_name": "Ancalagon",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Ice Luger",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.1,
+    "sort_order": 2
+  },
+  {
+    "crate_id": "10 Coins 'Ancalagon' crate",
+    "crate_name": "Ancalagon",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Ancalagon",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.01,
+    "p_gh_pct": 0.011,
+    "sort_order": 2
+  },
+  {
+    "crate_id": "10 Coins 'Bluesteel' crate",
+    "crate_name": "Bluesteel",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Blue Blade",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 50.89,
+    "p_gh_pct": 50.88,
+    "sort_order": 3
+  },
+  {
+    "crate_id": "10 Coins 'Bluesteel' crate",
+    "crate_name": "Bluesteel",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Blue Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 49.0,
+    "p_gh_pct": 49.0,
+    "sort_order": 3
+  },
+  {
+    "crate_id": "10 Coins 'Bluesteel' crate",
+    "crate_name": "Bluesteel",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Dimensions",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.1,
+    "sort_order": 3
+  },
+  {
+    "crate_id": "10 Coins 'Bluesteel' crate",
+    "crate_name": "Bluesteel",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Bluesteel",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.01,
+    "p_gh_pct": 0.011,
+    "sort_order": 3
+  },
+  {
+    "crate_id": "10 Coins 'Darkness' crate",
+    "crate_name": "Darkness",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Black Knife",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 50.89,
+    "p_gh_pct": 50.88,
+    "sort_order": 4
+  },
+  {
+    "crate_id": "10 Coins 'Darkness' crate",
+    "crate_name": "Darkness",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Black Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 49.0,
+    "p_gh_pct": 49.0,
+    "sort_order": 4
+  },
+  {
+    "crate_id": "10 Coins 'Darkness' crate",
+    "crate_name": "Darkness",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Shadowblade",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.1,
+    "sort_order": 4
+  },
+  {
+    "crate_id": "10 Coins 'Darkness' crate",
+    "crate_name": "Darkness",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Darkness",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.01,
+    "p_gh_pct": 0.011,
+    "sort_order": 4
+  },
+  {
+    "crate_id": "10 Coins 'Flames' crate",
+    "crate_name": "Flames",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Flambé",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 50.89,
+    "p_gh_pct": 50.88,
+    "sort_order": 5
+  },
+  {
+    "crate_id": "10 Coins 'Flames' crate",
+    "crate_name": "Flames",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Flambé Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 49.0,
+    "p_gh_pct": 49.0,
+    "sort_order": 5
+  },
+  {
+    "crate_id": "10 Coins 'Flames' crate",
+    "crate_name": "Flames",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Dragonflame",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.1,
+    "sort_order": 5
+  },
+  {
+    "crate_id": "10 Coins 'Flames' crate",
+    "crate_name": "Flames",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Flames",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.01,
+    "p_gh_pct": 0.011,
+    "sort_order": 5
+  },
+  {
+    "crate_id": "10 Coins 'Azure' crate",
+    "crate_name": "Azure",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Void Knife",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 50.89,
+    "p_gh_pct": 50.88,
+    "sort_order": 6
+  },
+  {
+    "crate_id": "10 Coins 'Azure' crate",
+    "crate_name": "Azure",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Void Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 49.0,
+    "p_gh_pct": 49.0,
+    "sort_order": 6
+  },
+  {
+    "crate_id": "10 Coins 'Azure' crate",
+    "crate_name": "Azure",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Amethyst",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.1,
+    "sort_order": 6
+  },
+  {
+    "crate_id": "10 Coins 'Azure' crate",
+    "crate_name": "Azure",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Azure Dragon",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.01,
+    "p_gh_pct": 0.011,
+    "sort_order": 6
+  },
+  {
+    "crate_id": "10 Coins 'Amethyst' crate",
+    "crate_name": "Amethyst",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Astronomic Knife",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 50.98,
+    "p_gh_pct": 50.97,
+    "sort_order": 7
+  },
+  {
+    "crate_id": "10 Coins 'Amethyst' crate",
+    "crate_name": "Amethyst",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Astronomic Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 49.0,
+    "p_gh_pct": 49.0,
+    "sort_order": 7
+  },
+  {
+    "crate_id": "10 Coins 'Amethyst' crate",
+    "crate_name": "Amethyst",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Amethyst Gun",
+    "item_rarity": "Godly",
+    "item_type": "Gun",
+    "p_base_pct": 0.01,
+    "p_gh_pct": 0.01,
+    "sort_order": 7
+  },
+  {
+    "crate_id": "10 Coins 'Amethyst' crate",
+    "crate_name": "Amethyst",
+    "category": "Daily Shop",
+    "cost": "10",
+    "currency": "Coins",
+    "item_name": "Amethyst Gun",
+    "item_rarity": "Godly",
+    "item_type": "Gun",
+    "p_base_pct": 0.01,
+    "p_gh_pct": 0.01,
+    "sort_order": 7
+  },
+  {
+    "crate_id": "100 Coins 'Destiny' crate",
+    "crate_name": "Destiny",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Slime",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 16.98,
+    "sort_order": 8
+  },
+  {
+    "crate_id": "100 Coins 'Destiny' crate",
+    "crate_name": "Destiny",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Painter",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 8
+  },
+  {
+    "crate_id": "100 Coins 'Destiny' crate",
+    "crate_name": "Destiny",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Coconut Knife",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 15.0,
+    "p_gh_pct": 15.0,
+    "sort_order": 8
+  },
+  {
+    "crate_id": "100 Coins 'Destiny' crate",
+    "crate_name": "Destiny",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Coconut Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 8
+  },
+  {
+    "crate_id": "100 Coins 'Destiny' crate",
+    "crate_name": "Destiny",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Lemon",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 12.0,
+    "p_gh_pct": 12.0,
+    "sort_order": 8
+  },
+  {
+    "crate_id": "100 Coins 'Destiny' crate",
+    "crate_name": "Destiny",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Lemon Gun",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 11.0,
+    "p_gh_pct": 11.0,
+    "sort_order": 8
+  },
+  {
+    "crate_id": "100 Coins 'Destiny' crate",
+    "crate_name": "Destiny",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Marble",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 7.0,
+    "p_gh_pct": 7.0,
+    "sort_order": 8
+  },
+  {
+    "crate_id": "100 Coins 'Destiny' crate",
+    "crate_name": "Destiny",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Marble Gun",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 6.9,
+    "p_gh_pct": 6.9,
+    "sort_order": 8
+  },
+  {
+    "crate_id": "100 Coins 'Destiny' crate",
+    "crate_name": "Destiny",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Orinthian Sword",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 8
+  },
+  {
+    "crate_id": "100 Coins 'Destiny' crate",
+    "crate_name": "Destiny",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Sword Of Destiny",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.11,
+    "sort_order": 8
+  },
+  {
+    "crate_id": "100 Coins 'Icy' crate",
+    "crate_name": "Icy",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Slime",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 16.98,
+    "sort_order": 9
+  },
+  {
+    "crate_id": "100 Coins 'Icy' crate",
+    "crate_name": "Icy",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Painter",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 9
+  },
+  {
+    "crate_id": "100 Coins 'Icy' crate",
+    "crate_name": "Icy",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Coconut Knife",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 15.0,
+    "p_gh_pct": 15.0,
+    "sort_order": 9
+  },
+  {
+    "crate_id": "100 Coins 'Icy' crate",
+    "crate_name": "Icy",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Coconut Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 9
+  },
+  {
+    "crate_id": "100 Coins 'Icy' crate",
+    "crate_name": "Icy",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Lemon",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 12.0,
+    "p_gh_pct": 12.0,
+    "sort_order": 9
+  },
+  {
+    "crate_id": "100 Coins 'Icy' crate",
+    "crate_name": "Icy",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Lemon Gun",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 11.0,
+    "p_gh_pct": 11.0,
+    "sort_order": 9
+  },
+  {
+    "crate_id": "100 Coins 'Icy' crate",
+    "crate_name": "Icy",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Marble",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 7.0,
+    "p_gh_pct": 7.0,
+    "sort_order": 9
+  },
+  {
+    "crate_id": "100 Coins 'Icy' crate",
+    "crate_name": "Icy",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Marble Gun",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 6.9,
+    "p_gh_pct": 6.9,
+    "sort_order": 9
+  },
+  {
+    "crate_id": "100 Coins 'Icy' crate",
+    "crate_name": "Icy",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Roman Sword",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 9
+  },
+  {
+    "crate_id": "100 Coins 'Icy' crate",
+    "crate_name": "Icy",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Icy Justice",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.11,
+    "sort_order": 9
+  },
+  {
+    "crate_id": "100 Coins 'Fiery' crate",
+    "crate_name": "Fiery",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Slime",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 16.98,
+    "sort_order": 10
+  },
+  {
+    "crate_id": "100 Coins 'Fiery' crate",
+    "crate_name": "Fiery",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Painter",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 10
+  },
+  {
+    "crate_id": "100 Coins 'Fiery' crate",
+    "crate_name": "Fiery",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Coconut Knife",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 15.0,
+    "p_gh_pct": 15.0,
+    "sort_order": 10
+  },
+  {
+    "crate_id": "100 Coins 'Fiery' crate",
+    "crate_name": "Fiery",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Coconut Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 10
+  },
+  {
+    "crate_id": "100 Coins 'Fiery' crate",
+    "crate_name": "Fiery",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Lemon",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 12.0,
+    "p_gh_pct": 12.0,
+    "sort_order": 10
+  },
+  {
+    "crate_id": "100 Coins 'Fiery' crate",
+    "crate_name": "Fiery",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Lemon Gun",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 11.0,
+    "p_gh_pct": 11.0,
+    "sort_order": 10
+  },
+  {
+    "crate_id": "100 Coins 'Fiery' crate",
+    "crate_name": "Fiery",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Marble",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 7.0,
+    "p_gh_pct": 7.0,
+    "sort_order": 10
+  },
+  {
+    "crate_id": "100 Coins 'Fiery' crate",
+    "crate_name": "Fiery",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Marble Gun",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 6.9,
+    "p_gh_pct": 6.9,
+    "sort_order": 10
+  },
+  {
+    "crate_id": "100 Coins 'Fiery' crate",
+    "crate_name": "Fiery",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Nefertiti's Sword",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 10
+  },
+  {
+    "crate_id": "100 Coins 'Fiery' crate",
+    "crate_name": "Fiery",
+    "category": "Daily Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Flaming Edge",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.11,
+    "sort_order": 10
+  },
+  {
+    "crate_id": "50 Emeralds 'Ancient' crate",
+    "crate_name": "Ancient",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Red Ancient Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 16.98,
+    "sort_order": 11
+  },
+  {
+    "crate_id": "50 Emeralds 'Ancient' crate",
+    "crate_name": "Ancient",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Red Ancient Knife",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 11
+  },
+  {
+    "crate_id": "50 Emeralds 'Ancient' crate",
+    "crate_name": "Ancient",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Blue Ancient Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 15.0,
+    "p_gh_pct": 15.0,
+    "sort_order": 11
+  },
+  {
+    "crate_id": "50 Emeralds 'Ancient' crate",
+    "crate_name": "Ancient",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Blue Ancient Knife",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 11
+  },
+  {
+    "crate_id": "50 Emeralds 'Ancient' crate",
+    "crate_name": "Ancient",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Amethyst Ancient Gun",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 13.0,
+    "p_gh_pct": 13.0,
+    "sort_order": 11
+  },
+  {
+    "crate_id": "50 Emeralds 'Ancient' crate",
+    "crate_name": "Ancient",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Amethyst Ancient Knife",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 12.0,
+    "p_gh_pct": 12.0,
+    "sort_order": 11
+  },
+  {
+    "crate_id": "50 Emeralds 'Ancient' crate",
+    "crate_name": "Ancient",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Emerald Ancient Gun",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 6.9,
+    "p_gh_pct": 6.9,
+    "sort_order": 11
+  },
+  {
+    "crate_id": "50 Emeralds 'Ancient' crate",
+    "crate_name": "Ancient",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Emerald Ancient Knife",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 5.0,
+    "p_gh_pct": 5.0,
+    "sort_order": 11
+  },
+  {
+    "crate_id": "50 Emeralds 'Ancient' crate",
+    "crate_name": "Ancient",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Redcliff Sword",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 11
+  },
+  {
+    "crate_id": "50 Emeralds 'Ancient' crate",
+    "crate_name": "Ancient",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Emerald Sword",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.11,
+    "sort_order": 11
+  },
+  {
+    "crate_id": "50 Emeralds 'Royal' crate",
+    "crate_name": "Royal",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Royal Yellow Knife",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 18.0,
+    "p_gh_pct": 17.98,
+    "sort_order": 12
+  },
+  {
+    "crate_id": "50 Emeralds 'Royal' crate",
+    "crate_name": "Royal",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Royal Yellow Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 17.0,
+    "sort_order": 12
+  },
+  {
+    "crate_id": "50 Emeralds 'Royal' crate",
+    "crate_name": "Royal",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Royal Green Knife",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 12
+  },
+  {
+    "crate_id": "50 Emeralds 'Royal' crate",
+    "crate_name": "Royal",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Royal Green Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 15.0,
+    "p_gh_pct": 15.0,
+    "sort_order": 12
+  },
+  {
+    "crate_id": "50 Emeralds 'Royal' crate",
+    "crate_name": "Royal",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Royal Red Knife",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 12.0,
+    "p_gh_pct": 12.0,
+    "sort_order": 12
+  },
+  {
+    "crate_id": "50 Emeralds 'Royal' crate",
+    "crate_name": "Royal",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Royal Red Knife",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 12.0,
+    "p_gh_pct": 12.0,
+    "sort_order": 12
+  },
+  {
+    "crate_id": "50 Emeralds 'Royal' crate",
+    "crate_name": "Royal",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Pink Quartz Knife",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 6.9,
+    "p_gh_pct": 6.9,
+    "sort_order": 12
+  },
+  {
+    "crate_id": "50 Emeralds 'Royal' crate",
+    "crate_name": "Royal",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Vlad's Blaster",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 12
+  },
+  {
+    "crate_id": "50 Emeralds 'Royal' crate",
+    "crate_name": "Royal",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Vlad's Lament",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 12
+  },
+  {
+    "crate_id": "50 Emeralds 'Royal' crate",
+    "crate_name": "Royal",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Eagle's Splendor",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.11,
+    "sort_order": 12
+  },
+  {
+    "crate_id": "50 Emeralds 'Skull <Placeholder>' crate",
+    "crate_name": "Skull <Placeholder>",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "<Placeholder>",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 16.98,
+    "sort_order": 13
+  },
+  {
+    "crate_id": "50 Emeralds 'Skull <Placeholder>' crate",
+    "crate_name": "Skull <Placeholder>",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "<Placeholder>",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 13
+  },
+  {
+    "crate_id": "50 Emeralds 'Skull <Placeholder>' crate",
+    "crate_name": "Skull <Placeholder>",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "<Placeholder>",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 15.0,
+    "p_gh_pct": 15.0,
+    "sort_order": 13
+  },
+  {
+    "crate_id": "50 Emeralds 'Skull <Placeholder>' crate",
+    "crate_name": "Skull <Placeholder>",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "<Placeholder>",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 13
+  },
+  {
+    "crate_id": "50 Emeralds 'Skull <Placeholder>' crate",
+    "crate_name": "Skull <Placeholder>",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "<Placeholder>",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 13.0,
+    "p_gh_pct": 13.0,
+    "sort_order": 13
+  },
+  {
+    "crate_id": "50 Emeralds 'Skull <Placeholder>' crate",
+    "crate_name": "Skull <Placeholder>",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "<Placeholder>",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 12.0,
+    "p_gh_pct": 12.0,
+    "sort_order": 13
+  },
+  {
+    "crate_id": "50 Emeralds 'Skull <Placeholder>' crate",
+    "crate_name": "Skull <Placeholder>",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "<Placeholder>",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 6.9,
+    "p_gh_pct": 6.9,
+    "sort_order": 13
+  },
+  {
+    "crate_id": "50 Emeralds 'Skull <Placeholder>' crate",
+    "crate_name": "Skull <Placeholder>",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "<Placeholder>",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 5.0,
+    "p_gh_pct": 5.0,
+    "sort_order": 13
+  },
+  {
+    "crate_id": "50 Emeralds 'Skull <Placeholder>' crate",
+    "crate_name": "Skull <Placeholder>",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Firey Justice",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 13
+  },
+  {
+    "crate_id": "50 Emeralds 'Skull <Placeholder>' crate",
+    "crate_name": "Skull <Placeholder>",
+    "category": "Weekly Shop",
+    "cost": "50",
+    "currency": "Emeralds",
+    "item_name": "Skull Slayer",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.11,
+    "sort_order": 13
+  },
+  {
+    "crate_id": "15 Robux 'Katana' crate",
+    "crate_name": "Katana",
+    "category": "Shop (Discontinued)",
+    "cost": "15",
+    "currency": "Robux",
+    "item_name": "Ronin Katana",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 18.0,
+    "p_gh_pct": 18.0,
+    "sort_order": 14
+  },
+  {
+    "crate_id": "15 Robux 'Katana' crate",
+    "crate_name": "Katana",
+    "category": "Shop (Discontinued)",
+    "cost": "15",
+    "currency": "Robux",
+    "item_name": "Bamboo Katana",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 14
+  },
+  {
+    "crate_id": "15 Robux 'Katana' crate",
+    "crate_name": "Katana",
+    "category": "Shop (Discontinued)",
+    "cost": "15",
+    "currency": "Robux",
+    "item_name": "Iris Katana",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 14
+  },
+  {
+    "crate_id": "15 Robux 'Katana' crate",
+    "crate_name": "Katana",
+    "category": "Shop (Discontinued)",
+    "cost": "15",
+    "currency": "Robux",
+    "item_name": "Orange Katana",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 13.0,
+    "p_gh_pct": 13.0,
+    "sort_order": 14
+  },
+  {
+    "crate_id": "15 Robux 'Katana' crate",
+    "crate_name": "Katana",
+    "category": "Shop (Discontinued)",
+    "cost": "15",
+    "currency": "Robux",
+    "item_name": "Crimson Katana",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 12.0,
+    "p_gh_pct": 12.0,
+    "sort_order": 14
+  },
+  {
+    "crate_id": "15 Robux 'Katana' crate",
+    "crate_name": "Katana",
+    "category": "Shop (Discontinued)",
+    "cost": "15",
+    "currency": "Robux",
+    "item_name": "Jade Katana",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 11.0,
+    "p_gh_pct": 11.0,
+    "sort_order": 14
+  },
+  {
+    "crate_id": "15 Robux 'Katana' crate",
+    "crate_name": "Katana",
+    "category": "Shop (Discontinued)",
+    "cost": "15",
+    "currency": "Robux",
+    "item_name": "Blue Katana",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 10.0,
+    "p_gh_pct": 10.0,
+    "sort_order": 14
+  },
+  {
+    "crate_id": "15 Robux 'Katana' crate",
+    "crate_name": "Katana",
+    "category": "Shop (Discontinued)",
+    "cost": "15",
+    "currency": "Robux",
+    "item_name": "Omega Katana",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 3.0,
+    "p_gh_pct": 3.0,
+    "sort_order": 14
+  },
+  {
+    "crate_id": "15 Robux 'Katana' crate",
+    "crate_name": "Katana",
+    "category": "Shop (Discontinued)",
+    "cost": "15",
+    "currency": "Robux",
+    "item_name": "Black Iron Katana",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 14
+  },
+  {
+    "crate_id": "15 Robux 'Katana' crate",
+    "crate_name": "Katana",
+    "category": "Shop (Discontinued)",
+    "cost": "15",
+    "currency": "Robux",
+    "item_name": "Cold Snake Katana",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 14
+  },
+  {
+    "crate_id": "25 Robux 'Bat' crate",
+    "crate_name": "Bat",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Robux",
+    "item_name": "Yellow Bat Gun",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 21.0,
+    "p_gh_pct": 21.0,
+    "sort_order": 15
+  },
+  {
+    "crate_id": "25 Robux 'Bat' crate",
+    "crate_name": "Bat",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Robux",
+    "item_name": "Yellow Bat",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 19.0,
+    "p_gh_pct": 19.0,
+    "sort_order": 15
+  },
+  {
+    "crate_id": "25 Robux 'Bat' crate",
+    "crate_name": "Bat",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Robux",
+    "item_name": "Toxic Bat Gun",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 18.0,
+    "p_gh_pct": 18.0,
+    "sort_order": 15
+  },
+  {
+    "crate_id": "25 Robux 'Bat' crate",
+    "crate_name": "Bat",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Robux",
+    "item_name": "Toxic Bat",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 17.0,
+    "sort_order": 15
+  },
+  {
+    "crate_id": "25 Robux 'Bat' crate",
+    "crate_name": "Bat",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Robux",
+    "item_name": "Crimson Bat Gun",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 7.0,
+    "p_gh_pct": 7.0,
+    "sort_order": 15
+  },
+  {
+    "crate_id": "25 Robux 'Bat' crate",
+    "crate_name": "Bat",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Robux",
+    "item_name": "Crimson Bat",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 6.0,
+    "p_gh_pct": 6.0,
+    "sort_order": 15
+  },
+  {
+    "crate_id": "25 Robux 'Bat' crate",
+    "crate_name": "Bat",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Robux",
+    "item_name": "Blue Bat Gun",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 5.0,
+    "p_gh_pct": 5.0,
+    "sort_order": 15
+  },
+  {
+    "crate_id": "25 Robux 'Bat' crate",
+    "crate_name": "Bat",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Robux",
+    "item_name": "Blue Bat",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 4.0,
+    "p_gh_pct": 4.0,
+    "sort_order": 15
+  },
+  {
+    "crate_id": "25 Robux 'Bat' crate",
+    "crate_name": "Bat",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Robux",
+    "item_name": "Emerald Bat Gun",
+    "item_rarity": "Godly",
+    "item_type": "Gun",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 15
+  },
+  {
+    "crate_id": "25 Robux 'Bat' crate",
+    "crate_name": "Bat",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Robux",
+    "item_name": "Emerald Bat",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 15
+  },
+  {
+    "crate_id": "49 Robux 'Synth' crate",
+    "crate_name": "Synth",
+    "category": "Shop",
+    "cost": "49",
+    "currency": "Robux",
+    "item_name": "Purple Synth Gun",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 21.0,
+    "p_gh_pct": 21.0,
+    "sort_order": 16
+  },
+  {
+    "crate_id": "49 Robux 'Synth' crate",
+    "crate_name": "Synth",
+    "category": "Shop",
+    "cost": "49",
+    "currency": "Robux",
+    "item_name": "Purple Synth Sword",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 19.0,
+    "p_gh_pct": 19.0,
+    "sort_order": 16
+  },
+  {
+    "crate_id": "49 Robux 'Synth' crate",
+    "crate_name": "Synth",
+    "category": "Shop",
+    "cost": "49",
+    "currency": "Robux",
+    "item_name": "Red Synth Gun",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 18.0,
+    "p_gh_pct": 18.0,
+    "sort_order": 16
+  },
+  {
+    "crate_id": "49 Robux 'Synth' crate",
+    "crate_name": "Synth",
+    "category": "Shop",
+    "cost": "49",
+    "currency": "Robux",
+    "item_name": "Red Synth Sword",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 17.0,
+    "sort_order": 16
+  },
+  {
+    "crate_id": "49 Robux 'Synth' crate",
+    "crate_name": "Synth",
+    "category": "Shop",
+    "cost": "49",
+    "currency": "Robux",
+    "item_name": "Green Synth Gun",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 7.0,
+    "p_gh_pct": 7.0,
+    "sort_order": 16
+  },
+  {
+    "crate_id": "49 Robux 'Synth' crate",
+    "crate_name": "Synth",
+    "category": "Shop",
+    "cost": "49",
+    "currency": "Robux",
+    "item_name": "Green Synth Sword",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 6.0,
+    "p_gh_pct": 6.0,
+    "sort_order": 16
+  },
+  {
+    "crate_id": "49 Robux 'Synth' crate",
+    "crate_name": "Synth",
+    "category": "Shop",
+    "cost": "49",
+    "currency": "Robux",
+    "item_name": "Blue Synth Gun",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 5.0,
+    "p_gh_pct": 5.0,
+    "sort_order": 16
+  },
+  {
+    "crate_id": "49 Robux 'Synth' crate",
+    "crate_name": "Synth",
+    "category": "Shop",
+    "cost": "49",
+    "currency": "Robux",
+    "item_name": "Blue Synth Sword",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 4.0,
+    "p_gh_pct": 4.0,
+    "sort_order": 16
+  },
+  {
+    "crate_id": "49 Robux 'Synth' crate",
+    "crate_name": "Synth",
+    "category": "Shop",
+    "cost": "49",
+    "currency": "Robux",
+    "item_name": "Lime Synth Gun",
+    "item_rarity": "Godly",
+    "item_type": "Gun",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 16
+  },
+  {
+    "crate_id": "49 Robux 'Synth' crate",
+    "crate_name": "Synth",
+    "category": "Shop",
+    "cost": "49",
+    "currency": "Robux",
+    "item_name": "Lime Synth Sword",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 16
+  },
+  {
+    "crate_id": "99 Robux 'Sniper' crate",
+    "crate_name": "Sniper",
+    "category": "Shop",
+    "cost": "99",
+    "currency": "Robux",
+    "item_name": "Pink Sniper",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 40.0,
+    "p_gh_pct": 40.0,
+    "sort_order": 17
+  },
+  {
+    "crate_id": "99 Robux 'Sniper' crate",
+    "crate_name": "Sniper",
+    "category": "Shop",
+    "cost": "99",
+    "currency": "Robux",
+    "item_name": "Orange Sniper",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 25.0,
+    "p_gh_pct": 25.0,
+    "sort_order": 17
+  },
+  {
+    "crate_id": "99 Robux 'Sniper' crate",
+    "crate_name": "Sniper",
+    "category": "Shop",
+    "cost": "99",
+    "currency": "Robux",
+    "item_name": "Red Sniper",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 20.0,
+    "p_gh_pct": 20.0,
+    "sort_order": 17
+  },
+  {
+    "crate_id": "99 Robux 'Sniper' crate",
+    "crate_name": "Sniper",
+    "category": "Shop",
+    "cost": "99",
+    "currency": "Robux",
+    "item_name": "Blue Sniper",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 17
+  },
+  {
+    "crate_id": "99 Robux 'Sniper' crate",
+    "crate_name": "Sniper",
+    "category": "Shop",
+    "cost": "99",
+    "currency": "Robux",
+    "item_name": "Green Sniper",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 17
+  },
+  {
+    "crate_id": "249 Robux 'Huge' crate",
+    "crate_name": "Huge",
+    "category": "Shop",
+    "cost": "249",
+    "currency": "Robux",
+    "item_name": "Huge Knife",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 50.0,
+    "p_gh_pct": 50.0,
+    "sort_order": 18
+  },
+  {
+    "crate_id": "249 Robux 'Huge' crate",
+    "crate_name": "Huge",
+    "category": "Shop",
+    "cost": "249",
+    "currency": "Robux",
+    "item_name": "Huge Revolver",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 45.0,
+    "p_gh_pct": 45.0,
+    "sort_order": 18
+  },
+  {
+    "crate_id": "249 Robux 'Huge' crate",
+    "crate_name": "Huge",
+    "category": "Shop",
+    "cost": "249",
+    "currency": "Robux",
+    "item_name": "Huge Ban Hammer",
+    "item_rarity": "Godly",
+    "item_type": "Gun",
+    "p_base_pct": 5.0,
+    "p_gh_pct": 5.0,
+    "sort_order": 18
+  },
+  {
+    "crate_id": "1 gold key 'Golden' crate",
+    "crate_name": "Golden",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "gold key",
+    "item_name": "Golden Shooter",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 16.99,
+    "sort_order": 19
+  },
+  {
+    "crate_id": "1 gold key 'Golden' crate",
+    "crate_name": "Golden",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "gold key",
+    "item_name": "Golden Shooter",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 16.99,
+    "sort_order": 19
+  },
+  {
+    "crate_id": "1 gold key 'Golden' crate",
+    "crate_name": "Golden",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "gold key",
+    "item_name": "Gold Vapor",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 19
+  },
+  {
+    "crate_id": "1 gold key 'Golden' crate",
+    "crate_name": "Golden",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "gold key",
+    "item_name": "Gold Vapor",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 19
+  },
+  {
+    "crate_id": "1 gold key 'Golden' crate",
+    "crate_name": "Golden",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "gold key",
+    "item_name": "Metallic Gold",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 10.0,
+    "p_gh_pct": 10.0,
+    "sort_order": 19
+  },
+  {
+    "crate_id": "1 gold key 'Golden' crate",
+    "crate_name": "Golden",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "gold key",
+    "item_name": "Metallic Gold",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 10.0,
+    "p_gh_pct": 10.0,
+    "sort_order": 19
+  },
+  {
+    "crate_id": "1 gold key 'Golden' crate",
+    "crate_name": "Golden",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "gold key",
+    "item_name": "Golden Blaster",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 6.9,
+    "p_gh_pct": 6.9,
+    "sort_order": 19
+  },
+  {
+    "crate_id": "1 gold key 'Golden' crate",
+    "crate_name": "Golden",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "gold key",
+    "item_name": "Golden Edge",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 6.0,
+    "p_gh_pct": 6.0,
+    "sort_order": 19
+  },
+  {
+    "crate_id": "1 gold key 'Golden' crate",
+    "crate_name": "Golden",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "gold key",
+    "item_name": "Golden Axe",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 19
+  },
+  {
+    "crate_id": "1 gold key 'Golden' crate",
+    "crate_name": "Golden",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "gold key",
+    "item_name": "Golden Scythe",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.11,
+    "sort_order": 19
+  },
+  {
+    "crate_id": "1 silver key 'Silver' crate",
+    "crate_name": "Silver",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "silver key",
+    "item_name": "Silver Knife",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 16.99,
+    "sort_order": 20
+  },
+  {
+    "crate_id": "1 silver key 'Silver' crate",
+    "crate_name": "Silver",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "silver key",
+    "item_name": "Silver Knife",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 16.99,
+    "sort_order": 20
+  },
+  {
+    "crate_id": "1 silver key 'Silver' crate",
+    "crate_name": "Silver",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "silver key",
+    "item_name": "Metallic Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 20
+  },
+  {
+    "crate_id": "1 silver key 'Silver' crate",
+    "crate_name": "Silver",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "silver key",
+    "item_name": "Metallic Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 20
+  },
+  {
+    "crate_id": "1 silver key 'Silver' crate",
+    "crate_name": "Silver",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "silver key",
+    "item_name": "Vapor Gun",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 10.0,
+    "p_gh_pct": 10.0,
+    "sort_order": 20
+  },
+  {
+    "crate_id": "1 silver key 'Silver' crate",
+    "crate_name": "Silver",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "silver key",
+    "item_name": "Vapor Gun",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 10.0,
+    "p_gh_pct": 10.0,
+    "sort_order": 20
+  },
+  {
+    "crate_id": "1 silver key 'Silver' crate",
+    "crate_name": "Silver",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "silver key",
+    "item_name": "Platinum Gun",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 6.9,
+    "p_gh_pct": 6.9,
+    "sort_order": 20
+  },
+  {
+    "crate_id": "1 silver key 'Silver' crate",
+    "crate_name": "Silver",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "silver key",
+    "item_name": "Platinum Knife",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 6.0,
+    "p_gh_pct": 6.0,
+    "sort_order": 20
+  },
+  {
+    "crate_id": "1 silver key 'Silver' crate",
+    "crate_name": "Silver",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "silver key",
+    "item_name": "Uppercut",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 20
+  },
+  {
+    "crate_id": "1 silver key 'Silver' crate",
+    "crate_name": "Silver",
+    "category": "Shop",
+    "cost": "1",
+    "currency": "silver key",
+    "item_name": "Wicked Heart",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.11,
+    "sort_order": 20
+  },
+  {
+    "crate_id": "20 Coins 'Princess' crate",
+    "crate_name": "Princess",
+    "category": "Shop",
+    "cost": "20",
+    "currency": "Coins",
+    "item_name": "Pink Knife",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 50.7,
+    "p_gh_pct": 50.69,
+    "sort_order": 21
+  },
+  {
+    "crate_id": "20 Coins 'Princess' crate",
+    "crate_name": "Princess",
+    "category": "Shop",
+    "cost": "20",
+    "currency": "Coins",
+    "item_name": "Pink Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 49.0,
+    "p_gh_pct": 49.0,
+    "sort_order": 21
+  },
+  {
+    "crate_id": "20 Coins 'Princess' crate",
+    "crate_name": "Princess",
+    "category": "Shop",
+    "cost": "20",
+    "currency": "Coins",
+    "item_name": "Princess",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 0.2,
+    "p_gh_pct": 0.2,
+    "sort_order": 21
+  },
+  {
+    "crate_id": "20 Coins 'Princess' crate",
+    "crate_name": "Princess",
+    "category": "Shop",
+    "cost": "20",
+    "currency": "Coins",
+    "item_name": "Princess Gun",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.11,
+    "sort_order": 21
+  },
+  {
+    "crate_id": "100 Coins 'Immortal' crate",
+    "crate_name": "Immortal",
+    "category": "Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Purple Blade",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 16.5,
+    "p_gh_pct": 16.45,
+    "sort_order": 22
+  },
+  {
+    "crate_id": "100 Coins 'Immortal' crate",
+    "crate_name": "Immortal",
+    "category": "Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Purple Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 22
+  },
+  {
+    "crate_id": "100 Coins 'Immortal' crate",
+    "crate_name": "Immortal",
+    "category": "Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Purple Scales",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 15.5,
+    "p_gh_pct": 15.5,
+    "sort_order": 22
+  },
+  {
+    "crate_id": "100 Coins 'Immortal' crate",
+    "crate_name": "Immortal",
+    "category": "Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Purple Scales Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 15.0,
+    "p_gh_pct": 15.0,
+    "sort_order": 22
+  },
+  {
+    "crate_id": "100 Coins 'Immortal' crate",
+    "crate_name": "Immortal",
+    "category": "Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Knife Of Darkness",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 12.5,
+    "p_gh_pct": 12.5,
+    "sort_order": 22
+  },
+  {
+    "crate_id": "100 Coins 'Immortal' crate",
+    "crate_name": "Immortal",
+    "category": "Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Gun Of Darkness",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 12.0,
+    "p_gh_pct": 12.0,
+    "sort_order": 22
+  },
+  {
+    "crate_id": "100 Coins 'Immortal' crate",
+    "crate_name": "Immortal",
+    "category": "Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Immortal Gun",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 6.0,
+    "p_gh_pct": 6.0,
+    "sort_order": 22
+  },
+  {
+    "crate_id": "100 Coins 'Immortal' crate",
+    "crate_name": "Immortal",
+    "category": "Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Immortal Knife",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 5.0,
+    "p_gh_pct": 5.0,
+    "sort_order": 22
+  },
+  {
+    "crate_id": "100 Coins 'Immortal' crate",
+    "crate_name": "Immortal",
+    "category": "Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Purple Scatterblaster",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 22
+  },
+  {
+    "crate_id": "100 Coins 'Immortal' crate",
+    "crate_name": "Immortal",
+    "category": "Shop",
+    "cost": "100",
+    "currency": "Coins",
+    "item_name": "Immortal Sword",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 0.5,
+    "p_gh_pct": 0.55,
+    "sort_order": 22
+  },
+  {
+    "crate_id": "130 Coins 'Lightning' crate",
+    "crate_name": "Lightning",
+    "category": "Shop",
+    "cost": "130",
+    "currency": "Coins",
+    "item_name": "Yellow Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 17.0,
+    "sort_order": 23
+  },
+  {
+    "crate_id": "130 Coins 'Lightning' crate",
+    "crate_name": "Lightning",
+    "category": "Shop",
+    "cost": "130",
+    "currency": "Coins",
+    "item_name": "Yellow Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 17.0,
+    "sort_order": 23
+  },
+  {
+    "crate_id": "130 Coins 'Lightning' crate",
+    "crate_name": "Lightning",
+    "category": "Shop",
+    "cost": "130",
+    "currency": "Coins",
+    "item_name": "Yellow Vortex",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 23
+  },
+  {
+    "crate_id": "130 Coins 'Lightning' crate",
+    "crate_name": "Lightning",
+    "category": "Shop",
+    "cost": "130",
+    "currency": "Coins",
+    "item_name": "Yellow Vortex Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 15.0,
+    "p_gh_pct": 15.0,
+    "sort_order": 23
+  },
+  {
+    "crate_id": "130 Coins 'Lightning' crate",
+    "crate_name": "Lightning",
+    "category": "Shop",
+    "cost": "130",
+    "currency": "Coins",
+    "item_name": "Lightning Knife",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 11.0,
+    "p_gh_pct": 11.0,
+    "sort_order": 23
+  },
+  {
+    "crate_id": "130 Coins 'Lightning' crate",
+    "crate_name": "Lightning",
+    "category": "Shop",
+    "cost": "130",
+    "currency": "Coins",
+    "item_name": "Lightning Gun",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 10.0,
+    "p_gh_pct": 10.0,
+    "sort_order": 23
+  },
+  {
+    "crate_id": "130 Coins 'Lightning' crate",
+    "crate_name": "Lightning",
+    "category": "Shop",
+    "cost": "130",
+    "currency": "Coins",
+    "item_name": "Blue Lightning",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 6.0,
+    "p_gh_pct": 6.0,
+    "sort_order": 23
+  },
+  {
+    "crate_id": "130 Coins 'Lightning' crate",
+    "crate_name": "Lightning",
+    "category": "Shop",
+    "cost": "130",
+    "currency": "Coins",
+    "item_name": "Blue Lightning Gun",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 5.0,
+    "p_gh_pct": 5.0,
+    "sort_order": 23
+  },
+  {
+    "crate_id": "130 Coins 'Lightning' crate",
+    "crate_name": "Lightning",
+    "category": "Shop",
+    "cost": "130",
+    "currency": "Coins",
+    "item_name": "Lightning Staff",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 23
+  },
+  {
+    "crate_id": "130 Coins 'Lightning' crate",
+    "crate_name": "Lightning",
+    "category": "Shop",
+    "cost": "130",
+    "currency": "Coins",
+    "item_name": "Lightning Horn",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 23
+  },
+  {
+    "crate_id": "150 Coins 'Bombastic' crate",
+    "crate_name": "Bombastic",
+    "category": "Shop",
+    "cost": "150",
+    "currency": "Coins",
+    "item_name": "Ginger Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 19.95,
+    "p_gh_pct": 19.94,
+    "sort_order": 24
+  },
+  {
+    "crate_id": "150 Coins 'Bombastic' crate",
+    "crate_name": "Bombastic",
+    "category": "Shop",
+    "cost": "150",
+    "currency": "Coins",
+    "item_name": "Ginger Knife",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 18.0,
+    "p_gh_pct": 18.0,
+    "sort_order": 24
+  },
+  {
+    "crate_id": "150 Coins 'Bombastic' crate",
+    "crate_name": "Bombastic",
+    "category": "Shop",
+    "cost": "150",
+    "currency": "Coins",
+    "item_name": "8Bit Lava",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 17.0,
+    "sort_order": 24
+  },
+  {
+    "crate_id": "150 Coins 'Bombastic' crate",
+    "crate_name": "Bombastic",
+    "category": "Shop",
+    "cost": "150",
+    "currency": "Coins",
+    "item_name": "Lava Knife",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 24
+  },
+  {
+    "crate_id": "150 Coins 'Bombastic' crate",
+    "crate_name": "Bombastic",
+    "category": "Shop",
+    "cost": "150",
+    "currency": "Coins",
+    "item_name": "Lava Gun",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 13.0,
+    "p_gh_pct": 13.0,
+    "sort_order": 24
+  },
+  {
+    "crate_id": "150 Coins 'Bombastic' crate",
+    "crate_name": "Bombastic",
+    "category": "Shop",
+    "cost": "150",
+    "currency": "Coins",
+    "item_name": "Bombastic Knife",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 8.0,
+    "p_gh_pct": 8.0,
+    "sort_order": 24
+  },
+  {
+    "crate_id": "150 Coins 'Bombastic' crate",
+    "crate_name": "Bombastic",
+    "category": "Shop",
+    "cost": "150",
+    "currency": "Coins",
+    "item_name": "Bombastic Gun",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 7.0,
+    "p_gh_pct": 7.0,
+    "sort_order": 24
+  },
+  {
+    "crate_id": "150 Coins 'Bombastic' crate",
+    "crate_name": "Bombastic",
+    "category": "Shop",
+    "cost": "150",
+    "currency": "Coins",
+    "item_name": "Lava Launcher",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 24
+  },
+  {
+    "crate_id": "150 Coins 'Bombastic' crate",
+    "crate_name": "Bombastic",
+    "category": "Shop",
+    "cost": "150",
+    "currency": "Coins",
+    "item_name": "Bombastic Sword",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 24
+  },
+  {
+    "crate_id": "150 Coins 'Bombastic' crate",
+    "crate_name": "Bombastic",
+    "category": "Shop",
+    "cost": "150",
+    "currency": "Coins",
+    "item_name": "Telamon's Hammer",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.05,
+    "p_gh_pct": 0.055,
+    "sort_order": 24
+  },
+  {
+    "crate_id": "250 Coins 'Mystical' crate",
+    "crate_name": "Mystical",
+    "category": "Shop",
+    "cost": "250",
+    "currency": "Coins",
+    "item_name": "Da Donkey",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 17.0,
+    "sort_order": 25
+  },
+  {
+    "crate_id": "250 Coins 'Mystical' crate",
+    "crate_name": "Mystical",
+    "category": "Shop",
+    "cost": "250",
+    "currency": "Coins",
+    "item_name": "Colorful",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 15.0,
+    "p_gh_pct": 15.0,
+    "sort_order": 25
+  },
+  {
+    "crate_id": "250 Coins 'Mystical' crate",
+    "crate_name": "Mystical",
+    "category": "Shop",
+    "cost": "250",
+    "currency": "Coins",
+    "item_name": "Colorful Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 25
+  },
+  {
+    "crate_id": "250 Coins 'Mystical' crate",
+    "crate_name": "Mystical",
+    "category": "Shop",
+    "cost": "250",
+    "currency": "Coins",
+    "item_name": "Watermelon Blade",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 13.0,
+    "p_gh_pct": 13.0,
+    "sort_order": 25
+  },
+  {
+    "crate_id": "250 Coins 'Mystical' crate",
+    "crate_name": "Mystical",
+    "category": "Shop",
+    "cost": "250",
+    "currency": "Coins",
+    "item_name": "Watermelon Shooter",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 12.0,
+    "p_gh_pct": 12.0,
+    "sort_order": 25
+  },
+  {
+    "crate_id": "250 Coins 'Mystical' crate",
+    "crate_name": "Mystical",
+    "category": "Shop",
+    "cost": "250",
+    "currency": "Coins",
+    "item_name": "Earthen",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 10.0,
+    "p_gh_pct": 10.0,
+    "sort_order": 25
+  },
+  {
+    "crate_id": "250 Coins 'Mystical' crate",
+    "crate_name": "Mystical",
+    "category": "Shop",
+    "cost": "250",
+    "currency": "Coins",
+    "item_name": "Earthen Gun",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 9.0,
+    "p_gh_pct": 9.0,
+    "sort_order": 25
+  },
+  {
+    "crate_id": "250 Coins 'Mystical' crate",
+    "crate_name": "Mystical",
+    "category": "Shop",
+    "cost": "250",
+    "currency": "Coins",
+    "item_name": "Overseer Knife",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 5.0,
+    "p_gh_pct": 5.0,
+    "sort_order": 25
+  },
+  {
+    "crate_id": "250 Coins 'Mystical' crate",
+    "crate_name": "Mystical",
+    "category": "Shop",
+    "cost": "250",
+    "currency": "Coins",
+    "item_name": "Overseer Gun",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 4.0,
+    "p_gh_pct": 4.0,
+    "sort_order": 25
+  },
+  {
+    "crate_id": "250 Coins 'Mystical' crate",
+    "crate_name": "Mystical",
+    "category": "Shop",
+    "cost": "250",
+    "currency": "Coins",
+    "item_name": "Tides",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 25
+  },
+  {
+    "crate_id": "500 Coins 'Game' crate",
+    "crate_name": "Game",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Coins",
+    "item_name": "Spare Shooter",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 26
+  },
+  {
+    "crate_id": "500 Coins 'Game' crate",
+    "crate_name": "Game",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Coins",
+    "item_name": "Spare Shooter",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 26
+  },
+  {
+    "crate_id": "500 Coins 'Game' crate",
+    "crate_name": "Game",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Coins",
+    "item_name": "Dices & Pieces",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 15.0,
+    "p_gh_pct": 15.0,
+    "sort_order": 26
+  },
+  {
+    "crate_id": "500 Coins 'Game' crate",
+    "crate_name": "Game",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Coins",
+    "item_name": "Dices & Pieces",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 15.0,
+    "p_gh_pct": 15.0,
+    "sort_order": 26
+  },
+  {
+    "crate_id": "500 Coins 'Game' crate",
+    "crate_name": "Game",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Coins",
+    "item_name": "Blox Blade",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 12.0,
+    "p_gh_pct": 12.0,
+    "sort_order": 26
+  },
+  {
+    "crate_id": "500 Coins 'Game' crate",
+    "crate_name": "Game",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Coins",
+    "item_name": "Blox Blade",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 12.0,
+    "p_gh_pct": 12.0,
+    "sort_order": 26
+  },
+  {
+    "crate_id": "500 Coins 'Game' crate",
+    "crate_name": "Game",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Coins",
+    "item_name": "RGB Reviver",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 6.0,
+    "p_gh_pct": 6.0,
+    "sort_order": 26
+  },
+  {
+    "crate_id": "500 Coins 'Game' crate",
+    "crate_name": "Game",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Coins",
+    "item_name": "RGB Razor",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 5.0,
+    "p_gh_pct": 5.0,
+    "sort_order": 26
+  },
+  {
+    "crate_id": "500 Coins 'Game' crate",
+    "crate_name": "Game",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Coins",
+    "item_name": "8-Bit",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 26
+  },
+  {
+    "crate_id": "500 Coins 'Game' crate",
+    "crate_name": "Game",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Coins",
+    "item_name": "8-Bit Sword",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 26
+  },
+  {
+    "crate_id": "1000 Coins 'Green' crate",
+    "crate_name": "Green",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Coins",
+    "item_name": "Green Blade",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 19.0,
+    "p_gh_pct": 19.0,
+    "sort_order": 27
+  },
+  {
+    "crate_id": "1000 Coins 'Green' crate",
+    "crate_name": "Green",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Coins",
+    "item_name": "Green Blade",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 19.0,
+    "p_gh_pct": 19.0,
+    "sort_order": 27
+  },
+  {
+    "crate_id": "1000 Coins 'Green' crate",
+    "crate_name": "Green",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Coins",
+    "item_name": "Leafy",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 17.0,
+    "sort_order": 27
+  },
+  {
+    "crate_id": "1000 Coins 'Green' crate",
+    "crate_name": "Green",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Coins",
+    "item_name": "Spaghet",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 12.0,
+    "p_gh_pct": 12.0,
+    "sort_order": 27
+  },
+  {
+    "crate_id": "1000 Coins 'Green' crate",
+    "crate_name": "Green",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Coins",
+    "item_name": "Da Ogre",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 11.0,
+    "p_gh_pct": 11.0,
+    "sort_order": 27
+  },
+  {
+    "crate_id": "1000 Coins 'Green' crate",
+    "crate_name": "Green",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Coins",
+    "item_name": "Mountain",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 10.0,
+    "p_gh_pct": 10.0,
+    "sort_order": 27
+  },
+  {
+    "crate_id": "1000 Coins 'Green' crate",
+    "crate_name": "Green",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Coins",
+    "item_name": "Dank Squad",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 5.0,
+    "p_gh_pct": 5.0,
+    "sort_order": 27
+  },
+  {
+    "crate_id": "1000 Coins 'Green' crate",
+    "crate_name": "Green",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Coins",
+    "item_name": "Dank Squad",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 5.0,
+    "p_gh_pct": 5.0,
+    "sort_order": 27
+  },
+  {
+    "crate_id": "1000 Coins 'Green' crate",
+    "crate_name": "Green",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Coins",
+    "item_name": "Overseer Bow",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 27
+  },
+  {
+    "crate_id": "1000 Coins 'Green' crate",
+    "crate_name": "Green",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Coins",
+    "item_name": "Overseer Bow",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 27
+  },
+  {
+    "crate_id": "1500 Coins 'Red' crate",
+    "crate_name": "Red",
+    "category": "Shop",
+    "cost": "1500",
+    "currency": "Coins",
+    "item_name": "Red Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 18.0,
+    "p_gh_pct": 18.0,
+    "sort_order": 28
+  },
+  {
+    "crate_id": "1500 Coins 'Red' crate",
+    "crate_name": "Red",
+    "category": "Shop",
+    "cost": "1500",
+    "currency": "Coins",
+    "item_name": "Red Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 18.0,
+    "p_gh_pct": 18.0,
+    "sort_order": 28
+  },
+  {
+    "crate_id": "1500 Coins 'Red' crate",
+    "crate_name": "Red",
+    "category": "Shop",
+    "cost": "1500",
+    "currency": "Coins",
+    "item_name": "Da Clown",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 28
+  },
+  {
+    "crate_id": "1500 Coins 'Red' crate",
+    "crate_name": "Red",
+    "category": "Shop",
+    "cost": "1500",
+    "currency": "Coins",
+    "item_name": "Orange Chip",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 28
+  },
+  {
+    "crate_id": "1500 Coins 'Red' crate",
+    "crate_name": "Red",
+    "category": "Shop",
+    "cost": "1500",
+    "currency": "Coins",
+    "item_name": "Da Impostor",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 11.0,
+    "p_gh_pct": 11.0,
+    "sort_order": 28
+  },
+  {
+    "crate_id": "1500 Coins 'Red' crate",
+    "crate_name": "Red",
+    "category": "Shop",
+    "cost": "1500",
+    "currency": "Coins",
+    "item_name": "Crewmate",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 10.0,
+    "p_gh_pct": 10.0,
+    "sort_order": 28
+  },
+  {
+    "crate_id": "1500 Coins 'Red' crate",
+    "crate_name": "Red",
+    "category": "Shop",
+    "cost": "1500",
+    "currency": "Coins",
+    "item_name": "Dark Matter Gun",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 5.0,
+    "p_gh_pct": 5.0,
+    "sort_order": 28
+  },
+  {
+    "crate_id": "1500 Coins 'Red' crate",
+    "crate_name": "Red",
+    "category": "Shop",
+    "cost": "1500",
+    "currency": "Coins",
+    "item_name": "Dark Matter Gun",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 5.0,
+    "p_gh_pct": 5.0,
+    "sort_order": 28
+  },
+  {
+    "crate_id": "1500 Coins 'Red' crate",
+    "crate_name": "Red",
+    "category": "Shop",
+    "cost": "1500",
+    "currency": "Coins",
+    "item_name": "Laser Gun",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 28
+  },
+  {
+    "crate_id": "1500 Coins 'Red' crate",
+    "crate_name": "Red",
+    "category": "Shop",
+    "cost": "1500",
+    "currency": "Coins",
+    "item_name": "Epicredness",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 28
+  },
+  {
+    "crate_id": "2000 Coins 'Yellow' crate",
+    "crate_name": "Yellow",
+    "category": "Shop",
+    "cost": "2000",
+    "currency": "Coins",
+    "item_name": "Smiley",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 18.0,
+    "p_gh_pct": 18.0,
+    "sort_order": 29
+  },
+  {
+    "crate_id": "2000 Coins 'Yellow' crate",
+    "crate_name": "Yellow",
+    "category": "Shop",
+    "cost": "2000",
+    "currency": "Coins",
+    "item_name": "Smiley",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 18.0,
+    "p_gh_pct": 18.0,
+    "sort_order": 29
+  },
+  {
+    "crate_id": "2000 Coins 'Yellow' crate",
+    "crate_name": "Yellow",
+    "category": "Shop",
+    "cost": "2000",
+    "currency": "Coins",
+    "item_name": "Skeleshooter",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 16.0,
+    "p_gh_pct": 16.0,
+    "sort_order": 29
+  },
+  {
+    "crate_id": "2000 Coins 'Yellow' crate",
+    "crate_name": "Yellow",
+    "category": "Shop",
+    "cost": "2000",
+    "currency": "Coins",
+    "item_name": "Gold Sparkle",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 29
+  },
+  {
+    "crate_id": "2000 Coins 'Yellow' crate",
+    "crate_name": "Yellow",
+    "category": "Shop",
+    "cost": "2000",
+    "currency": "Coins",
+    "item_name": "Gold Knife",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 11.0,
+    "p_gh_pct": 11.0,
+    "sort_order": 29
+  },
+  {
+    "crate_id": "2000 Coins 'Yellow' crate",
+    "crate_name": "Yellow",
+    "category": "Shop",
+    "cost": "2000",
+    "currency": "Coins",
+    "item_name": "Gold Gun",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 10.0,
+    "p_gh_pct": 10.0,
+    "sort_order": 29
+  },
+  {
+    "crate_id": "2000 Coins 'Yellow' crate",
+    "crate_name": "Yellow",
+    "category": "Shop",
+    "cost": "2000",
+    "currency": "Coins",
+    "item_name": "Diamond",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 5.0,
+    "p_gh_pct": 5.0,
+    "sort_order": 29
+  },
+  {
+    "crate_id": "2000 Coins 'Yellow' crate",
+    "crate_name": "Yellow",
+    "category": "Shop",
+    "cost": "2000",
+    "currency": "Coins",
+    "item_name": "Diamond",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 5.0,
+    "p_gh_pct": 5.0,
+    "sort_order": 29
+  },
+  {
+    "crate_id": "2000 Coins 'Yellow' crate",
+    "crate_name": "Yellow",
+    "category": "Shop",
+    "cost": "2000",
+    "currency": "Coins",
+    "item_name": "Gold Luger",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 29
+  },
+  {
+    "crate_id": "2000 Coins 'Yellow' crate",
+    "crate_name": "Yellow",
+    "category": "Shop",
+    "cost": "2000",
+    "currency": "Coins",
+    "item_name": "Heartbreaker",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 29
+  },
+  {
+    "crate_id": "3000 Coins 'Dark' crate",
+    "crate_name": "Dark",
+    "category": "Shop",
+    "cost": "3000",
+    "currency": "Coins",
+    "item_name": "Shadow Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 24.0,
+    "p_gh_pct": 23.99,
+    "sort_order": 30
+  },
+  {
+    "crate_id": "3000 Coins 'Dark' crate",
+    "crate_name": "Dark",
+    "category": "Shop",
+    "cost": "3000",
+    "currency": "Coins",
+    "item_name": "Shadow Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 24.0,
+    "p_gh_pct": 23.99,
+    "sort_order": 30
+  },
+  {
+    "crate_id": "3000 Coins 'Dark' crate",
+    "crate_name": "Dark",
+    "category": "Shop",
+    "cost": "3000",
+    "currency": "Coins",
+    "item_name": "Cloudy Gun",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 15.0,
+    "p_gh_pct": 15.0,
+    "sort_order": 30
+  },
+  {
+    "crate_id": "3000 Coins 'Dark' crate",
+    "crate_name": "Dark",
+    "category": "Shop",
+    "cost": "3000",
+    "currency": "Coins",
+    "item_name": "Cloudy Knife",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 30
+  },
+  {
+    "crate_id": "3000 Coins 'Dark' crate",
+    "crate_name": "Dark",
+    "category": "Shop",
+    "cost": "3000",
+    "currency": "Coins",
+    "item_name": "Astro Gun",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 9.0,
+    "p_gh_pct": 9.0,
+    "sort_order": 30
+  },
+  {
+    "crate_id": "3000 Coins 'Dark' crate",
+    "crate_name": "Dark",
+    "category": "Shop",
+    "cost": "3000",
+    "currency": "Coins",
+    "item_name": "Astro Knife",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 7.9,
+    "p_gh_pct": 7.9,
+    "sort_order": 30
+  },
+  {
+    "crate_id": "3000 Coins 'Dark' crate",
+    "crate_name": "Dark",
+    "category": "Shop",
+    "cost": "3000",
+    "currency": "Coins",
+    "item_name": "Luger",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 3.0,
+    "p_gh_pct": 3.0,
+    "sort_order": 30
+  },
+  {
+    "crate_id": "3000 Coins 'Dark' crate",
+    "crate_name": "Dark",
+    "category": "Shop",
+    "cost": "3000",
+    "currency": "Coins",
+    "item_name": "Fallen Artemis",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 30
+  },
+  {
+    "crate_id": "3000 Coins 'Dark' crate",
+    "crate_name": "Dark",
+    "category": "Shop",
+    "cost": "3000",
+    "currency": "Coins",
+    "item_name": "Monster Slayer",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 30
+  },
+  {
+    "crate_id": "3000 Coins 'Dark' crate",
+    "crate_name": "Dark",
+    "category": "Shop",
+    "cost": "3000",
+    "currency": "Coins",
+    "item_name": "Splintered Skies",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.11,
+    "sort_order": 30
+  },
+  {
+    "crate_id": "4000 Coins 'Relic' crate",
+    "crate_name": "Relic",
+    "category": "Shop",
+    "cost": "4000",
+    "currency": "Coins",
+    "item_name": "Ancient Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 24.0,
+    "p_gh_pct": 23.99,
+    "sort_order": 31
+  },
+  {
+    "crate_id": "4000 Coins 'Relic' crate",
+    "crate_name": "Relic",
+    "category": "Shop",
+    "cost": "4000",
+    "currency": "Coins",
+    "item_name": "Ancient Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 24.0,
+    "p_gh_pct": 23.99,
+    "sort_order": 31
+  },
+  {
+    "crate_id": "4000 Coins 'Relic' crate",
+    "crate_name": "Relic",
+    "category": "Shop",
+    "cost": "4000",
+    "currency": "Coins",
+    "item_name": "Radioactive Gun",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 15.0,
+    "p_gh_pct": 15.0,
+    "sort_order": 31
+  },
+  {
+    "crate_id": "4000 Coins 'Relic' crate",
+    "crate_name": "Relic",
+    "category": "Shop",
+    "cost": "4000",
+    "currency": "Coins",
+    "item_name": "Radioactive Knife",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 31
+  },
+  {
+    "crate_id": "4000 Coins 'Relic' crate",
+    "crate_name": "Relic",
+    "category": "Shop",
+    "cost": "4000",
+    "currency": "Coins",
+    "item_name": "Blue Crystal Gun",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 9.0,
+    "p_gh_pct": 9.0,
+    "sort_order": 31
+  },
+  {
+    "crate_id": "4000 Coins 'Relic' crate",
+    "crate_name": "Relic",
+    "category": "Shop",
+    "cost": "4000",
+    "currency": "Coins",
+    "item_name": "Blue Crystal Knife",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 7.9,
+    "p_gh_pct": 7.9,
+    "sort_order": 31
+  },
+  {
+    "crate_id": "4000 Coins 'Relic' crate",
+    "crate_name": "Relic",
+    "category": "Shop",
+    "cost": "4000",
+    "currency": "Coins",
+    "item_name": "Gatling",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 3.0,
+    "p_gh_pct": 3.0,
+    "sort_order": 31
+  },
+  {
+    "crate_id": "4000 Coins 'Relic' crate",
+    "crate_name": "Relic",
+    "category": "Shop",
+    "cost": "4000",
+    "currency": "Coins",
+    "item_name": "Crystal Axe",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 31
+  },
+  {
+    "crate_id": "4000 Coins 'Relic' crate",
+    "crate_name": "Relic",
+    "category": "Shop",
+    "cost": "4000",
+    "currency": "Coins",
+    "item_name": "Fermion Blade",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 31
+  },
+  {
+    "crate_id": "4000 Coins 'Relic' crate",
+    "crate_name": "Relic",
+    "category": "Shop",
+    "cost": "4000",
+    "currency": "Coins",
+    "item_name": "Tempest",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.11,
+    "sort_order": 31
+  },
+  {
+    "crate_id": "5000 Coins 'Gold' crate",
+    "crate_name": "Gold",
+    "category": "Shop",
+    "cost": "5000",
+    "currency": "Coins",
+    "item_name": "Flaming",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 45.0,
+    "p_gh_pct": 44.99,
+    "sort_order": 32
+  },
+  {
+    "crate_id": "5000 Coins 'Gold' crate",
+    "crate_name": "Gold",
+    "category": "Shop",
+    "cost": "5000",
+    "currency": "Coins",
+    "item_name": "Flaming Gun",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 44.0,
+    "p_gh_pct": 44.0,
+    "sort_order": 32
+  },
+  {
+    "crate_id": "5000 Coins 'Gold' crate",
+    "crate_name": "Gold",
+    "category": "Shop",
+    "cost": "5000",
+    "currency": "Coins",
+    "item_name": "Royal Blue",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 4.9,
+    "p_gh_pct": 4.9,
+    "sort_order": 32
+  },
+  {
+    "crate_id": "5000 Coins 'Gold' crate",
+    "crate_name": "Gold",
+    "category": "Shop",
+    "cost": "5000",
+    "currency": "Coins",
+    "item_name": "Blade's Crossbow",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 3.0,
+    "p_gh_pct": 3.0,
+    "sort_order": 32
+  },
+  {
+    "crate_id": "5000 Coins 'Gold' crate",
+    "crate_name": "Gold",
+    "category": "Shop",
+    "cost": "5000",
+    "currency": "Coins",
+    "item_name": "Dreamwalker",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 32
+  },
+  {
+    "crate_id": "5000 Coins 'Gold' crate",
+    "crate_name": "Gold",
+    "category": "Shop",
+    "cost": "5000",
+    "currency": "Coins",
+    "item_name": "Pharaoh's Sword",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 32
+  },
+  {
+    "crate_id": "5000 Coins 'Gold' crate",
+    "crate_name": "Gold",
+    "category": "Shop",
+    "cost": "5000",
+    "currency": "Coins",
+    "item_name": "Arabian Knight",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.11,
+    "sort_order": 32
+  },
+  {
+    "crate_id": "25 Gems 'Hazardous' crate",
+    "crate_name": "Hazardous",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Gems",
+    "item_name": "Cardboard Gun",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 19.95,
+    "p_gh_pct": 19.94,
+    "sort_order": 33
+  },
+  {
+    "crate_id": "25 Gems 'Hazardous' crate",
+    "crate_name": "Hazardous",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Gems",
+    "item_name": "Cardboard Knife",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 19.0,
+    "p_gh_pct": 19.0,
+    "sort_order": 33
+  },
+  {
+    "crate_id": "25 Gems 'Hazardous' crate",
+    "crate_name": "Hazardous",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Gems",
+    "item_name": "Blue Acid Knife",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 18.0,
+    "p_gh_pct": 18.0,
+    "sort_order": 33
+  },
+  {
+    "crate_id": "25 Gems 'Hazardous' crate",
+    "crate_name": "Hazardous",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Gems",
+    "item_name": "Toxic Drip Gun",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 33
+  },
+  {
+    "crate_id": "25 Gems 'Hazardous' crate",
+    "crate_name": "Hazardous",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Gems",
+    "item_name": "Toxic Drip Knife",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 13.0,
+    "p_gh_pct": 13.0,
+    "sort_order": 33
+  },
+  {
+    "crate_id": "25 Gems 'Hazardous' crate",
+    "crate_name": "Hazardous",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Gems",
+    "item_name": "Iron Gun",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 7.0,
+    "p_gh_pct": 7.0,
+    "sort_order": 33
+  },
+  {
+    "crate_id": "25 Gems 'Hazardous' crate",
+    "crate_name": "Hazardous",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Gems",
+    "item_name": "Iron Knife",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 6.0,
+    "p_gh_pct": 6.0,
+    "sort_order": 33
+  },
+  {
+    "crate_id": "25 Gems 'Hazardous' crate",
+    "crate_name": "Hazardous",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Gems",
+    "item_name": "Gilded Blaster",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 33
+  },
+  {
+    "crate_id": "25 Gems 'Hazardous' crate",
+    "crate_name": "Hazardous",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Gems",
+    "item_name": "Yellow Saw",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 33
+  },
+  {
+    "crate_id": "25 Gems 'Hazardous' crate",
+    "crate_name": "Hazardous",
+    "category": "Shop",
+    "cost": "25",
+    "currency": "Gems",
+    "item_name": "Immortal Ivory",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.05,
+    "p_gh_pct": 0.055,
+    "sort_order": 33
+  },
+  {
+    "crate_id": "50 Gems 'Blue' crate",
+    "crate_name": "Blue",
+    "category": "Shop",
+    "cost": "50",
+    "currency": "Gems",
+    "item_name": "Blue Edge",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 19.95,
+    "p_gh_pct": 19.94,
+    "sort_order": 34
+  },
+  {
+    "crate_id": "50 Gems 'Blue' crate",
+    "crate_name": "Blue",
+    "category": "Shop",
+    "cost": "50",
+    "currency": "Gems",
+    "item_name": "Blue Blaster",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 19.0,
+    "p_gh_pct": 19.0,
+    "sort_order": 34
+  },
+  {
+    "crate_id": "50 Gems 'Blue' crate",
+    "crate_name": "Blue",
+    "category": "Shop",
+    "cost": "50",
+    "currency": "Gems",
+    "item_name": "8Bit Water",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 18.0,
+    "p_gh_pct": 18.0,
+    "sort_order": 34
+  },
+  {
+    "crate_id": "50 Gems 'Blue' crate",
+    "crate_name": "Blue",
+    "category": "Shop",
+    "cost": "50",
+    "currency": "Gems",
+    "item_name": "Frozen Knife",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 34
+  },
+  {
+    "crate_id": "50 Gems 'Blue' crate",
+    "crate_name": "Blue",
+    "category": "Shop",
+    "cost": "50",
+    "currency": "Gems",
+    "item_name": "Frozen Gun",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 13.0,
+    "p_gh_pct": 13.0,
+    "sort_order": 34
+  },
+  {
+    "crate_id": "50 Gems 'Blue' crate",
+    "crate_name": "Blue",
+    "category": "Shop",
+    "cost": "50",
+    "currency": "Gems",
+    "item_name": "Oceanic Knife",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 7.0,
+    "p_gh_pct": 7.0,
+    "sort_order": 34
+  },
+  {
+    "crate_id": "50 Gems 'Blue' crate",
+    "crate_name": "Blue",
+    "category": "Shop",
+    "cost": "50",
+    "currency": "Gems",
+    "item_name": "Oceanic Gun",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 6.0,
+    "p_gh_pct": 6.0,
+    "sort_order": 34
+  },
+  {
+    "crate_id": "50 Gems 'Blue' crate",
+    "crate_name": "Blue",
+    "category": "Shop",
+    "cost": "50",
+    "currency": "Gems",
+    "item_name": "Plasma Gun",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 34
+  },
+  {
+    "crate_id": "50 Gems 'Blue' crate",
+    "crate_name": "Blue",
+    "category": "Shop",
+    "cost": "50",
+    "currency": "Gems",
+    "item_name": "Plasma Scythe",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 34
+  },
+  {
+    "crate_id": "50 Gems 'Blue' crate",
+    "crate_name": "Blue",
+    "category": "Shop",
+    "cost": "50",
+    "currency": "Gems",
+    "item_name": "Diamond Katana",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.05,
+    "p_gh_pct": 0.055,
+    "sort_order": 34
+  },
+  {
+    "crate_id": "100 Gems 'Space' crate",
+    "crate_name": "Space",
+    "category": "Shop",
+    "cost": "100",
+    "currency": "Gems",
+    "item_name": "Starry Night",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 40.0,
+    "p_gh_pct": 39.99,
+    "sort_order": 35
+  },
+  {
+    "crate_id": "100 Gems 'Space' crate",
+    "crate_name": "Space",
+    "category": "Shop",
+    "cost": "100",
+    "currency": "Gems",
+    "item_name": "Starry Night",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 40.0,
+    "p_gh_pct": 39.99,
+    "sort_order": 35
+  },
+  {
+    "crate_id": "100 Gems 'Space' crate",
+    "crate_name": "Space",
+    "category": "Shop",
+    "cost": "100",
+    "currency": "Gems",
+    "item_name": "Space Gun",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 9.69,
+    "p_gh_pct": 9.69,
+    "sort_order": 35
+  },
+  {
+    "crate_id": "100 Gems 'Space' crate",
+    "crate_name": "Space",
+    "category": "Shop",
+    "cost": "100",
+    "currency": "Gems",
+    "item_name": "Space",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 9.0,
+    "p_gh_pct": 9.0,
+    "sort_order": 35
+  },
+  {
+    "crate_id": "100 Gems 'Space' crate",
+    "crate_name": "Space",
+    "category": "Shop",
+    "cost": "100",
+    "currency": "Gems",
+    "item_name": "Midnight",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 35
+  },
+  {
+    "crate_id": "100 Gems 'Space' crate",
+    "crate_name": "Space",
+    "category": "Shop",
+    "cost": "100",
+    "currency": "Gems",
+    "item_name": "Nature's Beauty",
+    "item_rarity": "Godly",
+    "item_type": "Gun",
+    "p_base_pct": 0.2,
+    "p_gh_pct": 0.2,
+    "sort_order": 35
+  },
+  {
+    "crate_id": "100 Gems 'Space' crate",
+    "crate_name": "Space",
+    "category": "Shop",
+    "cost": "100",
+    "currency": "Gems",
+    "item_name": "Starstruck",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.11,
+    "sort_order": 35
+  },
+  {
+    "crate_id": "200 Gems 'Lava' crate",
+    "crate_name": "Lava",
+    "category": "Shop",
+    "cost": "200",
+    "currency": "Gems",
+    "item_name": "Orange Blade",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 40.0,
+    "p_gh_pct": 39.99,
+    "sort_order": 36
+  },
+  {
+    "crate_id": "200 Gems 'Lava' crate",
+    "crate_name": "Lava",
+    "category": "Shop",
+    "cost": "200",
+    "currency": "Gems",
+    "item_name": "Orange Blade",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 40.0,
+    "p_gh_pct": 40.0,
+    "sort_order": 36
+  },
+  {
+    "crate_id": "200 Gems 'Lava' crate",
+    "crate_name": "Lava",
+    "category": "Shop",
+    "cost": "200",
+    "currency": "Gems",
+    "item_name": "Atomic Blaster",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 8.9,
+    "p_gh_pct": 8.9,
+    "sort_order": 36
+  },
+  {
+    "crate_id": "200 Gems 'Lava' crate",
+    "crate_name": "Lava",
+    "category": "Shop",
+    "cost": "200",
+    "currency": "Gems",
+    "item_name": "Atomic",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 8.0,
+    "p_gh_pct": 8.0,
+    "sort_order": 36
+  },
+  {
+    "crate_id": "200 Gems 'Lava' crate",
+    "crate_name": "Lava",
+    "category": "Shop",
+    "cost": "200",
+    "currency": "Gems",
+    "item_name": "Dragon's Blaze",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 36
+  },
+  {
+    "crate_id": "200 Gems 'Lava' crate",
+    "crate_name": "Lava",
+    "category": "Shop",
+    "cost": "200",
+    "currency": "Gems",
+    "item_name": "Crescendo",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 36
+  },
+  {
+    "crate_id": "200 Gems 'Lava' crate",
+    "crate_name": "Lava",
+    "category": "Shop",
+    "cost": "200",
+    "currency": "Gems",
+    "item_name": "Fang",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.11,
+    "sort_order": 36
+  },
+  {
+    "crate_id": "500 Gems 'Bejeweled' crate",
+    "crate_name": "Bejeweled",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Gems",
+    "item_name": "Cyan Waves Gun",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 19.0,
+    "p_gh_pct": 18.98,
+    "sort_order": 37
+  },
+  {
+    "crate_id": "500 Gems 'Bejeweled' crate",
+    "crate_name": "Bejeweled",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Gems",
+    "item_name": "Cyan Waves",
+    "item_rarity": "Common",
+    "item_type": "Gun",
+    "p_base_pct": 18.0,
+    "p_gh_pct": 18.0,
+    "sort_order": 37
+  },
+  {
+    "crate_id": "500 Gems 'Bejeweled' crate",
+    "crate_name": "Bejeweled",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Gems",
+    "item_name": "Cryo Gun",
+    "item_rarity": "Common",
+    "item_type": "Knife",
+    "p_base_pct": 17.0,
+    "p_gh_pct": 17.0,
+    "sort_order": 37
+  },
+  {
+    "crate_id": "500 Gems 'Bejeweled' crate",
+    "crate_name": "Bejeweled",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Gems",
+    "item_name": "Cryo Knife",
+    "item_rarity": "Rare",
+    "item_type": "Knife",
+    "p_base_pct": 14.0,
+    "p_gh_pct": 14.0,
+    "sort_order": 37
+  },
+  {
+    "crate_id": "500 Gems 'Bejeweled' crate",
+    "crate_name": "Bejeweled",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Gems",
+    "item_name": "Ruby's Gun",
+    "item_rarity": "Rare",
+    "item_type": "Gun",
+    "p_base_pct": 13.0,
+    "p_gh_pct": 13.0,
+    "sort_order": 37
+  },
+  {
+    "crate_id": "500 Gems 'Bejeweled' crate",
+    "crate_name": "Bejeweled",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Gems",
+    "item_name": "Ruby's Edge",
+    "item_rarity": "Epic",
+    "item_type": "Knife",
+    "p_base_pct": 8.9,
+    "p_gh_pct": 8.9,
+    "sort_order": 37
+  },
+  {
+    "crate_id": "500 Gems 'Bejeweled' crate",
+    "crate_name": "Bejeweled",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Gems",
+    "item_name": "Electrocutor",
+    "item_rarity": "Epic",
+    "item_type": "Gun",
+    "p_base_pct": 7.0,
+    "p_gh_pct": 7.0,
+    "sort_order": 37
+  },
+  {
+    "crate_id": "500 Gems 'Bejeweled' crate",
+    "crate_name": "Bejeweled",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Gems",
+    "item_name": "Hyperred Blaster",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 37
+  },
+  {
+    "crate_id": "500 Gems 'Bejeweled' crate",
+    "crate_name": "Bejeweled",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Gems",
+    "item_name": "Sword Of Great Fury",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 37
+  },
+  {
+    "crate_id": "500 Gems 'Bejeweled' crate",
+    "crate_name": "Bejeweled",
+    "category": "Shop",
+    "cost": "500",
+    "currency": "Gems",
+    "item_name": "Sword Of The Inferno",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.1,
+    "p_gh_pct": 0.11,
+    "sort_order": 37
+  },
+  {
+    "crate_id": "1000 Gems 'Diamond' crate",
+    "crate_name": "Diamond",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Gems",
+    "item_name": "Quadshooter",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 25.0,
+    "p_gh_pct": 24.95,
+    "sort_order": 38
+  },
+  {
+    "crate_id": "1000 Gems 'Diamond' crate",
+    "crate_name": "Diamond",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Gems",
+    "item_name": "Hex Spitter",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 23.0,
+    "p_gh_pct": 23.0,
+    "sort_order": 38
+  },
+  {
+    "crate_id": "1000 Gems 'Diamond' crate",
+    "crate_name": "Diamond",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Gems",
+    "item_name": "Bone And Arrow",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 21.0,
+    "p_gh_pct": 21.0,
+    "sort_order": 38
+  },
+  {
+    "crate_id": "1000 Gems 'Diamond' crate",
+    "crate_name": "Diamond",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Gems",
+    "item_name": "Azurewrath",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 15.5,
+    "p_gh_pct": 15.5,
+    "sort_order": 38
+  },
+  {
+    "crate_id": "1000 Gems 'Diamond' crate",
+    "crate_name": "Diamond",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Gems",
+    "item_name": "Overseer Crossbow",
+    "item_rarity": "Legendary",
+    "item_type": "Gun",
+    "p_base_pct": 5.0,
+    "p_gh_pct": 5.0,
+    "sort_order": 38
+  },
+  {
+    "crate_id": "1000 Gems 'Diamond' crate",
+    "crate_name": "Diamond",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Gems",
+    "item_name": "Overseer Sword",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 4.0,
+    "p_gh_pct": 4.0,
+    "sort_order": 38
+  },
+  {
+    "crate_id": "1000 Gems 'Diamond' crate",
+    "crate_name": "Diamond",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Gems",
+    "item_name": "Federation's Blade",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 3.0,
+    "p_gh_pct": 3.0,
+    "sort_order": 38
+  },
+  {
+    "crate_id": "1000 Gems 'Diamond' crate",
+    "crate_name": "Diamond",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Gems",
+    "item_name": "Undying",
+    "item_rarity": "Legendary",
+    "item_type": "Knife",
+    "p_base_pct": 2.0,
+    "p_gh_pct": 2.0,
+    "sort_order": 38
+  },
+  {
+    "crate_id": "1000 Gems 'Diamond' crate",
+    "crate_name": "Diamond",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Gems",
+    "item_name": "Korblox Bow",
+    "item_rarity": "Godly",
+    "item_type": "Gun",
+    "p_base_pct": 1.0,
+    "p_gh_pct": 1.0,
+    "sort_order": 38
+  },
+  {
+    "crate_id": "1000 Gems 'Diamond' crate",
+    "crate_name": "Diamond",
+    "category": "Shop",
+    "cost": "1000",
+    "currency": "Gems",
+    "item_name": "Korblox Cleaver",
+    "item_rarity": "Godly",
+    "item_type": "Knife",
+    "p_base_pct": 0.5,
+    "p_gh_pct": 0.55,
+    "sort_order": 38
+  }
+];
+
+  const MILESTONES = [0.10,0.25,0.50,0.75,0.90,0.95];
+
+  const elStatus = document.getElementById('status');
+  const elCrates = document.getElementById('crates');
+  const elUseGH = document.getElementById('useGH');
+  const elRollsN = document.getElementById('rollsN');
+  const elOpens = document.getElementById('opensPerSec');
+  const elFilter = document.getElementById('filterText');
+  const elShowAdv = document.getElementById('showAdvanced');
+  const elWarnTotals = document.getElementById('warnTotals');
+  const elLuckMod = document.getElementById('luckMod');
+
+  function num(x){ const v = Number(x); return Number.isFinite(v) ? v : NaN; }
+  function clamp(x,a,b){ return Math.max(a, Math.min(b, x)); }
+  function pctToP(pct){ return pct/100; }
+  function chanceAtLeastOne(p,n){ if (!(p>0)) return 0; if (p>=1) return 1; return 1 - Math.pow(1-p, n); }
+  function opensForTargetChance(p,g){ if (!(p>0)) return Infinity; if (p>=1) return 1; g=clamp(g,1e-9,1-1e-9); return Math.ceil(Math.log(1-g)/Math.log(1-p)); }
+  function fmtPct(x){ if (!Number.isFinite(x)) return '--'; return (x).toFixed(x < 0.1 ? 3 : 2) + '%'; }
+  function fmtNum(x,d=2){ if (!Number.isFinite(x)) return '--'; if (x>1e9) return x.toExponential(2); return x.toFixed(d); }
+  function fmtInt(x){ if (!Number.isFinite(x)) return '--'; return String(Math.round(x)); }
+  function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+  function displayCrateName(name) {
+    const s = String(name ?? '').trim();
+    if (!s) return '';
+    const cleaned = s.replace(/['"]/g, '');
+    return /crate\s*$/i.test(cleaned) ? cleaned : (cleaned + (cleaned.toLowerCase().endsWith(' crate') ? '' : ' Crate'));
+  }
+
+  function groupByCrate(rows){
+    const m = new Map();
+    for (const r of rows){
+      const k = r.crate_id;
+      if (!m.has(k)) m.set(k, []);
+      m.get(k).push(r);
+    }
+    return m;
+  }
+
+  function computeAndRender(){
+    const useGH = elUseGH.checked;
+    const showAdv = elShowAdv.checked;
+    const luckMult = clamp(num(elLuckMod?.value ?? 1) || 1, 1, 1.3);
+    const luckLabel = (elLuckMod && elLuckMod.selectedIndex >= 0) ? (elLuckMod.options[elLuckMod.selectedIndex].textContent || '') : '';
+
+    const N = Math.max(1, Math.floor(num(elRollsN.value) || 1));
+
+    const elNLabelEq = document.getElementById('nLabelEq');
+    if (elNLabelEq) elNLabelEq.textContent = fmtInt(N);
+    const opensPerSec = Math.max(0.1, num(elOpens.value) || 1);
+
+    const filter = (elFilter.value || '').trim().toLowerCase();
+    const filtered = DATA.filter(r =>
+      !filter
+      || String(r.crate_name || '').toLowerCase().includes(filter)
+      || displayCrateName(r.crate_name || '').toLowerCase().includes(filter)
+      || String(r.crate_id || '').toLowerCase().includes(filter)
+    );
+
+    const byCrate = groupByCrate(filtered);
+
+    const crateEntries = Array.from(byCrate.entries());
+    crateEntries.sort((a, b) => {
+      const ra = a[1][0] || {};
+      const rb = b[1][0] || {};
+
+      const oa = Number(ra.sort_order);
+      const ob = Number(rb.sort_order);
+      if (Number.isFinite(oa) && Number.isFinite(ob)) {
+        return oa - ob;
+      }
+
+      return String(a[0]).localeCompare(String(b[0]));
+    });
+
+    elCrates.innerHTML = '';
+
+    // Count warnings for CURRENT mode only
+    let warnCount = 0;
+    for (const [crateId, rows] of crateEntries){
+      const sumBase = rows.reduce((a,r)=>a+(num(r.p_base_pct)||0),0);
+      const sumGH = rows.reduce((a,r)=>a+(num(r.p_gh_pct)||0),0);
+      const currentSum = useGH ? sumGH : sumBase;
+      if (currentSum !== 100) {
+        warnCount++;
+      }
+    }
+
+    if (warnCount > 0){
+      elWarnTotals.style.display='block';
+      elWarnTotals.textContent=`⚠️ ${warnCount} crate(s) have incorrect totals in ${useGH?'Godly Hunter':'Base'} mode. This will alter your chances. This is something only Davey (the developer) can fix.`;
+    } else {
+      elWarnTotals.style.display='none';
+    }
+
+    for (const [crateId, rows] of crateEntries){
+      const cost = num(rows[0].cost);
+      const currency = rows[0].currency || '';
+      const category = rows[0].category || '';
+      const crateName = rows[0].crate_name || rows[0].crate_id;
+      const crateNameDisp = displayCrateName(crateName);
+
+      const crateEl = document.createElement('section');
+      crateEl.className = 'crate';
+
+      const sumBaseCrate = rows.reduce((a,r)=>a+(num(r.p_base_pct)||0),0);
+      const sumGHCrate = rows.reduce((a,r)=>a+(num(r.p_gh_pct)||0),0);
+
+      // Check CURRENT mode only
+	const currentSum = useGH ? sumGHCrate : sumBaseCrate;
+	if (currentSum !== 100) {
+	  crateEl.classList.add('total-warning');
+	}
+      const head = document.createElement('div');
+      head.className = 'crateHead';
+      head.innerHTML = `
+        <div>
+          <div class="crateTitle">${escapeHtml(crateNameDisp)}</div>
+          <div class="crateMeta">
+            <span class="pill mono">${Number.isFinite(cost)?cost:'--'} ${escapeHtml(currency)}</span>
+            <span class="mono">•</span>
+            <span class="pill">${escapeHtml(category || 'N/A')}</span>
+            <span class="mono">•</span>
+            <span class="tip" data-tip="Total cost of crates if you purchase ${fmtInt(N)} of them.">Total cost:</span> <span class="mono">${Number.isFinite(cost)?fmtNum(cost*N,2):'--'} ${escapeHtml(currency)}</span>
+            <span class="mono">•</span>
+            <span class="tip" data-tip="Estimated time to open ${fmtInt(N)} crates.">Time to open:</span> <span class="mono">${fmtNum(N/opensPerSec,1)}s</span>
+            <span class="mono">•</span>
+            <span class="tip" data-tip="Which odds are used for all calculations.">Odds:</span> <span class="mono">${(useGH?'Godly Hunter':'Base') + ((luckMult!==1 && luckLabel) ? (' + ' + luckLabel.split('//')[0].trim()) : '')}</span>
+          </div>
+        </div>
+      `;
+      crateEl.appendChild(head);
+
+      const table = document.createElement('table');
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Rarity</th>
+            <th>Type</th>
+            <th><span class="tip" data-tip="Per-open probability used by all calculations.">Probability</span></th>
+            <th><span class="tip" data-tip="How much the 'Godly Hunter' game-pass changes the probabilties.<br><br>(Δ in % points, and multiplier ×).">GH Multiplier</span></th>
+            <th><span class="tip" data-tip="Aproximate chance to get at least one in ${fmtInt(N)} opens.<br><br>(N): 1 − (1 − p)^N.">Chance in ${fmtInt(N)} opens</span></th>
+            <th><span class="tip" data-tip="Average opens to get one (expected).<br><br>1/p">Avg opens</span></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      `;
+      const tbody = table.querySelector('tbody');
+
+      for (const r of rows){
+        const pBasePct = num(r.p_base_pct);
+        const pGHPct = num(r.p_gh_pct);
+
+        const pProbPctRaw = useGH ? pGHPct : pBasePct;
+        const pProbPct = clamp(pProbPctRaw * luckMult, 0, 100);
+        const p = pctToP(pProbPct);
+
+        const delta = (Number.isFinite(pGHPct) && Number.isFinite(pBasePct)) ? (pGHPct - pBasePct) : NaN;
+        const mult = (Number.isFinite(pGHPct) && Number.isFinite(pBasePct) && pBasePct>0) ? (pGHPct/pBasePct) : NaN;
+        const diffText = (!Number.isFinite(delta) || Math.abs(delta) < 1e-12) ? '--' : `Δ ${delta>0?'+':''}${fmtPct(delta)}; ×${fmtNum(mult,3)}`;
+
+        const chanceN = chanceAtLeastOne(p, N);
+        const avgOpens = (p>0) ? (1/p) : Infinity;
+
+        // Rarity class
+        const rarityClass = 'rarity-' + (r.item_rarity || 'Common').trim().split(' ')[0];
+
+        let milestoneHtml = '';
+        if (showAdv){
+          const cells = MILESTONES.map(g => {
+            const need = opensForTargetChance(p, g);
+            const spend = (Number.isFinite(cost) && Number.isFinite(need)) ? cost*need : Infinity;
+            return `<div class="milestone"><div><b>${Math.round(g*100)}%</b> chance</div><div class="mono">Opens: ${Number.isFinite(need)?fmtInt(need):'∞'}</div><div class="mono">Spend: ${Number.isFinite(spend)?fmtNum(spend,2)+' '+escapeHtml(currency):'∞'}</div></div>`;
+          }).join('');
+          milestoneHtml = `
+            <details class="rowDetails">
+              <summary class="mono">Milestones 10/25/50/75/90/95% (click)</summary>
+              <div class="rowDetailBox">
+                <div class="note">Uses the same odds you selected (Base or Godly Hunter).</div>
+                <div class="milestoneGrid">${cells}</div>
+              </div>
+            </details>`;
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <div>${escapeHtml(r.item_name || '--')}</div>
+            ${showAdv ? milestoneHtml : ''}
+          </td>
+          <td class="${rarityClass}">${escapeHtml(r.item_rarity || '--')}</td>
+          <td class="mono">${escapeHtml(r.item_type || '--')}</td>
+          <td class="mono">${fmtPct(pProbPct)}</td>
+          <td class="mono">${escapeHtml(diffText)}</td>
+          <td class="mono">${(chanceN*100).toFixed(2)}%</td>
+          <td class="mono">${Number.isFinite(avgOpens)?fmtNum(avgOpens,2):'∞'}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      crateEl.appendChild(table);
+
+      const sumProb = useGH ? sumGHCrate : sumBaseCrate;
+      const off = (currentSum !== 100);
+
+      const totals = document.createElement('div');
+      totals.className = 'crateTotals';
+      totals.innerHTML = `Total crate odds: <span class="mono ${off?'bad':''}">${sumProb.toFixed(3)}%</span> <span class="mono">(${useGH?'Godly Hunter':'Base'} odds)</span>`;
+      crateEl.appendChild(totals);
+
+      elCrates.appendChild(crateEl);
+    }
+
+    elStatus.textContent = `Rows loaded: ${DATA.length}. Displayed: ${filtered.length}.`;
+  }
+
+  function safeRender(){
+    try {
+      computeAndRender();
+    } catch (e) {
+      const msg = (e && (e.stack || e.message)) ? (e.stack || e.message) : String(e);
+      if (elStatus) elStatus.textContent = 'Render error: ' + msg;
+      console.error(e);
+    }
+  }
+
+  [elUseGH, elLuckMod, elRollsN, elOpens, elFilter, elShowAdv]
+    .filter(Boolean)
+    .forEach(el => {
+      el.addEventListener('input', safeRender);
+      el.addEventListener('change', safeRender);
+      el.addEventListener('click', safeRender);
+    });
+
+  safeRender();
+
+
+  // Toggle controls panel visibility
+  function toggleControls() {
+    const panel = document.getElementById('controlsPanel');
+    const btn = document.getElementById('controlsToggle');
+
+    if (panel && btn) {
+      panel.classList.toggle('hidden');
+      btn.textContent = panel.classList.contains('hidden') ? '▲' : '▼';
+    }
+  }
+</script>
+
+<footer style="text-align:center;padding:20px;color:#888;font-size:12px;border-top:1px solid #222;">
+  <div style="margin-bottom:8px;font-weight:600;">Knewest TDMX Probabilities v1.0</div>
+  <div style="margin-bottom:8px;">
+    Copyright © 2025-2026 Knew • 
+    <a href="https://github.com/Knewest" style="color:#b0b0b0;text-decoration:none;">GitHub (@Knewest)</a> • 
+    <a href="https://www.roblox.com/users/22904035/profile" style="color:#b0b0b0;text-decoration:none;">Roblox (@niyuuesuto)</a> • 
+    <a href="https://discord.gg/NqqqzajfK4" style="color:#b0b0b0;text-decoration:none;">Discord Server</a>
+  </div>
+  <div style="font-size:11px;color:#666;">Licensed under Boost Software License 1.0</div>
+</footer>
+
+</body>
+</html>
+
+<!--
+// Version 1.0 of 'Knewest TDMX Probabilities'.
+// Copyright (Boost Software License 1.0) 2025-2026 Knew
+// GitHub: https://github.com/Knewest
+// Support server: https://discord.gg/NqqqzajfK4
+-->
