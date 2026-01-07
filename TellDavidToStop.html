@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="UTF-8">
+    <title>Tell David To Stop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        h2 {
+            margin-top: 25px;
+            color: #333;
+        }
+        h3 {
+            margin-top: 20px;
+            color: #555;
+        }
+        p {
+            margin: 10px 0;
+            text-align: justify;
+        }
+        .evidence {
+            background-color: #f5f5f5;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 3px solid #666;
+        }
+        .important {
+            background-color: #fff3cd;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 3px solid #ffc107;
+        }
+        .screenshot {
+            display: block;
+            max-width: 700px;
+            width: 100%;
+            height: auto;
+            margin: 15px auto;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .evidence-header {
+            cursor: pointer;
+            user-select: none;
+            font-weight: bold;
+            padding: 12px 8px;
+            margin: -15px -15px 0 -15px;
+            background-color: #e8e8e8;
+            border-bottom: 2px solid #999;
+            transition: background-color 0.2s;
+        }
+        .evidence-header:hover {
+            background-color: #ddd;
+        }
+        .expand-arrow {
+            display: inline-block;
+            margin-right: 8px;
+            transition: transform 0.3s ease;
+            font-size: 16px;
+            color: #555;
+        }
+        .expand-arrow.expanded {
+            transform: rotate(90deg);
+        }
+        .image-count {
+            font-weight: normal;
+            color: #666;
+            font-size: 14px;
+            margin-left: 8px;
+        }
+        .evidence-preview {
+            position: relative;
+            max-height: 150px;
+            overflow: hidden;
+            margin: 15px 0 0 0;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+        }
+        .evidence-preview.hidden {
+            max-height: 0;
+            opacity: 0;
+        }
+        .preview-image {
+            display: block;
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+        }
+        .fade-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(to bottom, rgba(245,245,245,0) 0%, rgba(245,245,245,1) 100%);
+            pointer-events: none;
+        }
+        .evidence-content {
+            display: none;
+            margin-top: 10px;
+            max-height: 600px;
+            overflow-y: auto;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            padding: 10px;
+            position: relative;
+            box-shadow: inset 0 10px 15px -10px rgba(0,0,0,0.2);
+        }
+        .evidence-content.show {
+            display: block;
+        }
+        .evidence-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        .evidence-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .evidence-content::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .evidence-content::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .scroll-hint {
+            text-align: center;
+            padding: 8px;
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #856404;
+            font-weight: bold;
+        }
+        .end-hint {
+            text-align: center;
+            padding: 8px;
+            background-color: #e8e8e8;
+            border: 1px solid #999;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+            font-style: italic;
+        }
+        .audio-container {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 12px;
+            margin: 10px 0;
+        }
+        .audio-player {
+            width: 100%;
+            margin-top: 8px;
+        }
+    
+        .image-counter {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(51, 51, 51, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 16px;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+</style>
+<script>
+        function toggleEvidence(id) {
+            const content = document.getElementById(id);
+            const preview = document.getElementById(id + '-preview');
+            const arrow = document.getElementById(id + '-arrow');
+
+            if (content.classList.contains('show')) {
+                content.classList.remove('show');
+                if (preview) preview.classList.remove('hidden');
+                arrow.classList.remove('expanded');
+            } else {
+                content.classList.add('show');
+                if (preview) preview.classList.add('hidden');
+                arrow.classList.add('expanded');
+                // Scroll to top of content when expanded
+                content.scrollTop = 0;
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="image">Total evidence in document: <span id="image-count">0</span></div>
+
+    <h1>Tell David To Stop</h1>
+
+    <h2>Overview</h2>
+    <p>This document outlines a pattern of harmful behavior by David, including manipulation, harassment, spreading misinformation, and repeatedly bringing up private medical information (mental health and medication) that was shared in confidence -- even after being explicitly asked to stop. Despite multiple attempts to resolve issues, David has refused to mediate or fix things, instead choosing to badmouth me to anyone who will listen. His actions have been characterized by contradictory statements, half-truths, and what he himself later admitted was an extended "prank" designed to hurt me.</p>
+
+    <h2>What Prompted The Release of This Documentation</h2>
+
+    <p>This document was created because David has continued to spread lies and misinformation about me, even after being repeatedly asked to stop. As of January 5-7, 2026, David was caught making additional false claims to mutual friends, demonstrating that his pattern of harmful behavior has not stopped.</p>
+
+    <p>On January 7, 2026, Poke shared screenshots of recent messages from David that contained multiple false accusations and malicious statements. These screenshots show David:</p>
+
+    <ul>
+        <li>Claiming I "never told the whole story" despite having provided complete documentation with proof</li>
+        <li>Accusing me of being "disgusting and obsessed" with him, when I go weeks without thinking about him and only find out he's spreading lies when others inform me</li>
+        <li>Explicitly stating he hopes I lose all my friends and that I "deserve it" -- showing clear malicious intent</li>
+        <li>Falsely claiming I use my diagnosed ASD (Autism Spectrum Disorder) to "win every argument," which is completely untrue and something I explicitly refuse to let people do</li>
+        <li>Bringing up the resolved "stalker" accusation again, despite knowing the full context has been explained multiple times with proof</li>
+    </ul>
+
+    <div class="important">
+        <strong>For the record on the "stalker" claim:</strong> I never once directly called David a stalker. What I said (with verifiable proof in the DM screenshots with Tgfg/Nezu) is that David would have to be actively stalking me to join servers where Chuchu and I were playing when he had absolutely no mutual friends in those servers. He appeared with no warning and stayed for about an hour. When questioned, he claimed others were there (they were not). I have the Discord DMs where he makes this claim, and I can prove he was lying. He won't show his "proof" because it doesn't support his story. I will. You may find the evidence in the DMs with Tgfg/Nezu and I titled "DMs with Tgfg showing the full context". There is only one mention of stalking.
+    </div>
+
+    <p>What makes this particularly frustrating is the pattern: David and those who believe he can make accusations with no proof, while I'm constantly forced to provide extensive documentation to counter hearsay and lies, all whilst being lambasted by him for simply retelling his behaviour with accuracy and verifiable evidence. They say one lie in a few words, and I'm forced to respond with hundreds of words of explanation and proof. This imbalance is intentional and designed to exhaust me.</p>
+
+    <p>This is why I've created this comprehensive document -- to have all the proof in one place so it's easier for everyone to see why I have a problem with David, and why nothing David says should be taken as honest fact. At best, his claims are rumors. At worst, they are malicious lies intended to isolate me and damage my relationships.</p>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="toggleEvidence('evidence-catalyst')">
+            <span class="expand-arrow" id="evidence-catalyst-arrow">►</span>
+            <strong>Evidence - Recent malicious behavior (January 2026):</strong>
+            <span class="image-count">(4 screenshots)</span>
+        </div>
+        <div class="evidence-preview" id="evidence-catalyst-preview">
+            <img src="evidence_assets/evidence_001.jpg" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        <div class="evidence-content" id="evidence-catalyst">
+            <div class="scroll-hint">Scroll to view all screenshots</div>
+            <img src="evidence_assets/evidence_002.jpg" class="screenshot" alt="David claiming Knew never told the whole story">
+            <img src="evidence_assets/evidence_003.jpg" class="screenshot" alt="David claiming Knew is obsessed with him">
+            <img src="evidence_assets/evidence_004.jpg" class="screenshot" alt="David saying he hopes Knew loses all friends">
+            <img src="evidence_assets/evidence_005.jpg" class="screenshot" alt="David claiming Knew uses ASD to win arguments">
+            <div class="end-hint">End of screenshots</div>
+        </div>
+    </div>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="toggleEvidence('evidence-poke-dms')">
+            <span class="expand-arrow" id="evidence-poke-dms-arrow">►</span>
+            <strong>Evidence - DMs with Poke showing the full context:</strong>
+            <span class="image-count">(4 screenshots)</span>
+        </div>
+        <div class="evidence-preview" id="evidence-poke-dms-preview">
+            <img src="evidence_assets/evidence_006.webp" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        <div class="evidence-content" id="evidence-poke-dms">
+            <div class="scroll-hint">Scroll to view all screenshots</div>
+            <img src="evidence_assets/evidence_007.webp" class="screenshot" alt="Chat with Poke screenshot 1">
+            <img src="evidence_assets/evidence_008.webp" class="screenshot" alt="Chat with Poke screenshot 2">
+            <img src="evidence_assets/evidence_009.webp" class="screenshot" alt="Chat with Poke screenshot 3">
+            <img src="evidence_assets/evidence_010.webp" class="screenshot" alt="Chat with Poke screenshot 4">
+            <div class="end-hint">End of screenshots</div>
+        </div>
+    </div>
+
+    <h2>Timeline of Events</h2>
+	
+    <div class="important">
+        <strong>Key Issues:</strong>
+        <ul>
+            <li>Repeated violation of trust by bringing up my mental health and medication</li>
+            <li>Pattern of lying and spreading misinformation</li>
+            <li>Admitted to prolonged harassment disguised as "pranks"</li>
+            <li>Zero attempts at mediation or resolution</li>
+            <li>Established reputation for exaggerating situations with half-truths</li>
+        </ul>
+    </div>
+
+    <h3>Initial Incident - The Display Name "Prank"</h3>
+    <p>David changed his display name to "Knew" (my name), making everything he said appear as if I was saying it. This deeply bothered me, especially because:</p>
+    <ul>
+        <li>I had explicitly told him TWICE not to do this prank</li>
+        <li>At the time, I was having issues with my anti-depressants, having forgotten to take them for over 6 hours</li>
+        <li>I was extremely emotional and vulnerable</li>
+        <li>I had warned Chuchu weeks prior that missing medication could cause problems</li>
+    </ul>
+
+    <div class="important">
+        <strong>CRITICAL VIOLATION #1:</strong> When I explained I had forgotten my anti-depressants and apologized for being upset, David would later dismiss it as "making excuses" and tell everyone this. This was the first time he showed complete disregard for my mental health after I trusted him with this private medical information.
+    </div>
+
+    <p>David continued this "prank" for days, saying suggestive and gross things while pretending to be me. I repeatedly asked him to stop. He claimed he couldn't change his display name back and had to wait a week. This was a lie -- Tgfg discovered early on that you can reset your display name at any time by simply setting it to your username.</p>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="toggleEvidence('evidence-1')">
+            <span class="expand-arrow" id="evidence-1-arrow">►</span>
+            <strong>Evidence - Display Name Conversation:</strong>
+            <span class="image-count">(3 screenshots)</span>
+        </div>
+        <div class="evidence-preview" id="evidence-1-preview">
+            <img src="evidence_assets/evidence_011.avif" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        <div class="evidence-content" id="evidence-1">
+            <div class="scroll-hint">Scroll to view all screenshots</div>
+            <img src="evidence_assets/evidence_012.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_013.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_014.avif" class="screenshot" alt="Screenshot evidence">
+            <div class="end-hint">End of screenshots</div>
+        </div>
+    </div>
+    
+    <p>David dragged this out for days, forcing me to deal with his behavior simply because he "couldn't figure out" how to reset his display name after being told exactly how to do it.</p>
+
+    <h3>The Unadding</h3>
+    <p>After approximately two weeks of no issues, David suddenly removed me from his contacts, but deliberately made it known to others without informing me directly. He told Poke, Tgfg, and Chuchu why he did this, but specifically instructed them not to tell me. In retrospect, this appears to have been an intentional attempt to make me think everyone hated me.</p>
+
+    <h3>Cryptic Reasoning and Contradictions</h3>
+    <p>When asked why he unadded me, David's reasons kept changing:</p>
+    <ul>
+        <li>First claim: "jealousy" (cryptic and vague)</li>
+        <li>Later claim: He wanted the same treatment I was giving Chuchu</li>
+        <li>He accused me of giving his gifts to Chuchu (which never happened)</li>
+        <li>Eventually: It was all "just a prank"</li>
+    </ul>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="toggleEvidence('evidence-2')">
+            <span class="expand-arrow" id="evidence-2-arrow">►</span>
+            <strong>Evidence - What Tgfg/Nezu was told by David:</strong>
+            <span class="image-count">(2 screenshots)</span>
+        </div>
+        <div class="evidence-preview" id="evidence-2-preview">
+            <img src="evidence_assets/evidence_015.webp" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        <div class="evidence-content" id="evidence-2">
+            <div class="scroll-hint">Scroll to view all screenshots</div>
+            <img src="evidence_assets/evidence_016.webp" class="screenshot" alt="Screenshot evidence">
+			<img src="evidence_assets/evidence_017.webp" class="screenshot" alt="Screenshot evidence">
+			<p>Note: The screenshot has since expired showing what David didn't want me to see, but my screenshot of the screenshot displays his intentions.</p>
+            <div class="end-hint">End of screenshots</div>
+        </div>
+    </div>
+
+    <h3>David's Established Reputation</h3>
+    <p>David had already gained a reputation within the friend group as a liar and drama stirrer. This wasn't just my observation -- others in the group had noticed this pattern.</p>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="toggleEvidence('evidence-3')">
+            <span class="expand-arrow" id="evidence-3-arrow">►</span>
+            <strong>Evidence - Group discussion about David's reputation:</strong>
+            <span class="image-count">(3 screenshots)</span>
+        </div>
+        <div class="evidence-preview" id="evidence-3-preview">
+            <img src="evidence_assets/evidence_018.webp" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        <div class="evidence-content" id="evidence-3">
+            <div class="scroll-hint">Scroll to view all screenshots</div>
+            <img src="evidence_assets/evidence_019.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_020.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_021.webp" class="screenshot" alt="Screenshot evidence">
+            <div class="end-hint">End of screenshots</div>
+        </div>
+    </div>
+    
+    <div class="context-note">
+        <strong>David's Potential Ulterior Motives - TDMX Dual Wield Game-Pass:</strong>
+        <p>During the group discussion about David's reputation documented above, I brought up that David may have had ulterior motive for his behavior. David brought up the dual wield game-pass in TDMX (a game) three times during our interactions, which I repeatedly ignored. This happened just before the conflict, so the timing suggests that David's anger and subsequent behavior may have been partially motivated by the fact that I did not purchase this game-pass for him, despite his repeated requests and that I had already purchased him faster mining and VIP. This adds another layer to understanding David's true motivations -- it wasn't just about attention or perceived slights, but potentially about not getting what he wanted materially, which lines up with his later claims of wanting to be treated the same as Chuchu (whom I was spoiling), and earlier claims of 'jealously'.</p>
+    </div>
+
+<h3>Poke's Conversation with David</h3>
+    <p>A day or two later, Poke spoke with David and forwarded the information to me. The reasoning completely contradicted the stated issues before. The main takeaway from this conversation was that David wanted special treatment and felt entitled to the same level of attention I gave Chuchu. He also falsely believed I was giving his gifts (cheap items he gave me, which I used for trading) to Chuchu. I never did this. I used them as intended for trading to get other items I wanted.</p>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="toggleEvidence('evidence-5')">
+            <span class="expand-arrow" id="evidence-5-arrow">►</span>
+            <strong>Evidence - Poke's conversation with David:</strong>
+            <span class="image-count">(13 screenshots)</span>
+        </div>
+        <div class="evidence-preview" id="evidence-5-preview">
+            <img src="evidence_assets/evidence_022.avif" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        <div class="evidence-content" id="evidence-5">
+            <div class="scroll-hint">Scroll to view all screenshots</div>
+            <img src="evidence_assets/evidence_023.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_024.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_025.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_026.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_027.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_028.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_029.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_030.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_031.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_032.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_033.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_034.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_035.avif" class="screenshot" alt="Screenshot evidence">
+            <div class="end-hint">End of screenshots</div>
+        </div>
+    </div>
+
+    <h3>Spreading Misinformation</h3>
+    <p>David actively lied to Tgfg about what was said in our DMs. I had to provide screenshots to prove what actually happened. This was when I started documenting everything because I couldn't trust David to tell the truth.</p>
+
+    <div class="important">
+        <strong>CRITICAL VIOLATION #2:</strong> David was caught lying about the content of our private conversations to mutual friends, forcing me to defend myself with evidence.
+    </div>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="toggleEvidence('evidence-6')">
+            <span class="expand-arrow" id="evidence-6-arrow">►</span>
+            <strong>Evidence - DMs with Tgfg showing the full context:</strong>
+            <span class="image-count">(8 screenshots)</span>
+        </div>
+        <div class="evidence-preview" id="evidence-6-preview">
+            <img src="evidence_assets/evidence_036.webp" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        <div class="evidence-content" id="evidence-6">
+            <div class="scroll-hint">Scroll to view all screenshots</div>
+            <img src="evidence_assets/evidence_037.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_038.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_039.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_040.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_041.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_042.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_043.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_044.webp" class="screenshot" alt="Screenshot evidence">
+            <div class="end-hint">End of screenshots</div>
+        </div>
+    </div>
+    <div class="evidence">
+        <div class="evidence-header" onclick="toggleEvidence('evidence-7')">
+            <span class="expand-arrow" id="evidence-7-arrow">►</span>
+            <strong>Evidence - Proof David was lying about our DMs:</strong>
+            <span class="image-count">(3 screenshots)</span>
+        </div>
+        <div class="evidence-preview" id="evidence-7-preview">
+            <img src="evidence_assets/evidence_045.avif" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        <div class="evidence-content" id="evidence-7">
+            <div class="scroll-hint">Scroll to view all screenshots</div>
+            <img src="evidence_assets/evidence_046.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_047.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_048.png" class="screenshot" alt="Screenshot evidence">
+            <div class="end-hint">End of screenshots</div>
+        </div>
+    </div>
+
+    <h3>The Admission: "It Was All a Prank"</h3>
+    <p>After being confronted with evidence of his lies, David joined again and started another argument. In this conversation, he admitted that everything he had done -- including involving Tgfg and affecting his mental wellbeing -- was all "a prank."</p>
+
+    <div class="important">
+        <strong>CRITICAL ADMISSION:</strong> David confessed that over a week of manipulation, lying, harassment, and involving mutual friends was all deliberate and intended as "a prank."
+    </div>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="toggleEvidence('evidence-8')">
+            <span class="expand-arrow" id="evidence-8-arrow">►</span>
+            <strong>Evidence - Argument where David admits it was "a prank":</strong>
+            <span class="image-count">(24 screenshots)</span>
+        </div>
+        <div class="evidence-preview" id="evidence-8-preview">
+            <img src="evidence_assets/evidence_049.avif" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        <div class="evidence-content" id="evidence-8">
+            <div class="scroll-hint">Scroll to view all screenshots</div>
+            <img src="evidence_assets/evidence_050.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_051.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_052.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_053.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_054.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_055.png" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_056.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_057.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_058.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_059.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_060.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_061.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_062.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_063.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_064.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_065.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_066.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_067.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_068.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_069.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_070.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_071.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_072.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_073.avif" class="screenshot" alt="Screenshot evidence">
+            <div class="end-hint">End of screenshots</div>
+        </div>
+    </div>
+
+    <p>During this argument, I returned all items David had ever gifted me, and more, to end any claim he had over me.</p>
+
+    <h3>External Perspective</h3>
+    <p>I discussed what happened with another friend at the time, who validated my concerns about David's behavior.</p>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="toggleEvidence('evidence-9')">
+            <span class="expand-arrow" id="evidence-9-arrow">►</span>
+            <strong>Evidence - Discussion with friend about David's behavior:</strong>
+            <span class="image-count">(4 screenshots)</span>
+        </div>
+        <div class="evidence-preview" id="evidence-9-preview">
+            <img src="evidence_assets/evidence_074.avif" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        <div class="evidence-content" id="evidence-9">
+            <div class="scroll-hint">Scroll to view all screenshots</div>
+            <img src="evidence_assets/evidence_075.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_076.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_077.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_078.png" class="screenshot" alt="Screenshot evidence">
+            <div class="end-hint">End of screenshots</div>
+        </div>
+    </div>
+
+    <h3>Ongoing Harassment and Badmouthing</h3>
+    <p>David did not stop after admitting his behavior was "a prank." He has continued to:</p>
+    <ul>
+        <li>Bring up these incidents to anyone who will listen</li>
+        <li>Contradict himself repeatedly</li>
+        <li>Spread rumors and misinformation about me</li>
+        <li>Contact my friends uninvited to talk about me</li>
+    </ul>
+
+    <div class="important">
+        <strong>CRITICAL VIOLATION #3:</strong> After weeks of no contact, David reached out to Chuchu unannounced specifically to talk about me, continuing his pattern of badmouthing rather than attempting any form of mediation or resolution.
+    </div>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="toggleEvidence('evidence-10')">
+            <span class="expand-arrow" id="evidence-10-arrow">►</span>
+            <strong>Evidence - Chuchu's comments about David contacting her:</strong>
+            <span class="image-count">(4 screenshots, 3 voice messages)</span>
+        </div>
+        <div class="evidence-content" id="evidence-10">
+            <div class="scroll-hint">Scroll to view all screenshots</div>
+            <div class="audio-container">
+                <strong>Voice Message 1:</strong>
+                <audio controls="" class="audio-player">
+                    <source src="https://cdn.discordapp.com/attachments/1453506414512439296/1454621090117713991/voice-message.ogg?ex=695eeff5&amp;is=695d9e75&amp;hm=c41ffab32754f16a7fa2cf1dbae4d0cf42f3bd093574b75ad4a43c4fed6236a3&amp;" type="audio/ogg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+            <div class="audio-container">
+                <strong>Voice Message 2:</strong>
+                <audio controls="" class="audio-player">
+                    <source src="https://cdn.discordapp.com/attachments/1453506414512439296/1454621203611258892/voice-message.ogg?ex=695f98d0&amp;is=695e4750&amp;hm=cfd30155e8bfe89f5b15baad1a243944bfad93159266593b6ef5c427fb4390ec&amp;" type="audio/ogg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+            <div class="audio-container">
+                <strong>Voice Message 3:</strong>
+                <audio controls="" class="audio-player">
+                    <source src="https://cdn.discordapp.com/attachments/1453506414512439296/1454621298411176148/voice-message.ogg?ex=695ef027&amp;is=695d9ea7&amp;hm=6a761f525ea83cfdde1fcbf18baf7bfeaca6b9307f2057da41def6ddb6955a49&amp;" type="audio/ogg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+
+            <div class="context-note">
+                <strong>Context:</strong> These voice messages were sent by Chuchu in DMs after David tried talking to her about me unannounced, following weeks of not talking to her.
+            </div>
+
+            <div class="screenshot-section">
+                <strong>Chuchu's comments in the Group Chat about David:</strong>
+                <div class="image-grid">
+                    <img src="evidence_assets/evidence_079.webp" alt="Chuchu's comment about David" class="screenshot">
+                    <img src="evidence_assets/evidence_080.webp" alt="Chuchu's GC comment 1" class="screenshot">
+                    <img src="evidence_assets/evidence_081.webp" alt="Chuchu's GC comment 2" class="screenshot">
+                    <img src="evidence_assets/evidence_082.webp" alt="Chuchu's GC comment 3" class="screenshot">
+                </div>
+            </div>
+            
+            <div class="end-hint">End of screenshots</div>
+        </div>
+    </div>
+
+    <h3>Pattern of Bringing Up Mental Health</h3>
+    <p>Throughout multiple arguments and conversations with others, David has repeatedly brought up my mental health and medication -- information I shared with him in confidence. He has done this even after being explicitly asked to stop.</p>
+
+    <div class="important">
+        <strong>CRITICAL VIOLATION #4:</strong> David has weaponized private medical information about my mental health and anti-depressant medication in arguments and conversations with others, showing a complete disregard for my privacy and wellbeing even after being asked to stop.
+    </div>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="toggleEvidence('evidence-11')">
+            <span class="expand-arrow" id="evidence-11-arrow">►</span>
+            <strong>Evidence - Additional arguments showing the pattern:</strong>
+            <span class="image-count">(30 screenshots)</span>
+        </div>
+        <div class="evidence-preview" id="evidence-11-preview">
+            <img src="evidence_assets/evidence_083.avif" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        <div class="evidence-content" id="evidence-11">
+            <div class="scroll-hint">Scroll to view all screenshots</div>
+            <img src="evidence_assets/evidence_084.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_085.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_086.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_087.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_088.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_089.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_090.png" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_091.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_092.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_093.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_094.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_095.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_096.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_097.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_098.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_099.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_100.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_101.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_102.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_103.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_104.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_105.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_106.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_107.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_108.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_109.png" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_110.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_111.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_112.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_113.png" class="screenshot" alt="Screenshot evidence">
+            <div class="end-hint">End of screenshots</div>
+        </div>
+    </div>
+
+    
+    <h2>Why Do They Keep Hurting Me?</h2>
+
+    <p>I don't know, and I wish I knew the answer. I ask so little of any of them, yet they cannot stop. People intimately aware of the problems I have experienced with David, Chuchu, and Kayci also cannot understand why any of them are so seemingly eager to hurt me more when they already have done so much to hurt me.</p>
+
+    <h3>Dina's Reaction</h3>
+    <div class="evidence">
+        <div class="evidence-header" onclick="toggleEvidence('evidence-dina')">
+            <span class="expand-arrow" id="evidence-dina-arrow">►</span>
+            <span>Dina's Reaction</span>
+            <span class="image-count">3 screenshots</span>
+        </div>
+        <div class="evidence-preview" id="evidence-dina-preview">
+            <img src="evidence_assets/evidence_113.webp" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        <div class="evidence-content" id="evidence-dina">
+            <div class="scroll-hint">Scroll to view all screenshots</div>
+            <img src="evidence_assets/evidence_113.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_114.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_115.webp" class="screenshot" alt="Screenshot evidence">
+            <div class="end-hint">End of screenshots</div>
+        </div>
+    </div>
+
+    <h3>Tgfg/Nezu's Perspective</h3>
+    <div class="evidence">
+        <div class="evidence-header" onclick="toggleEvidence('evidence-tgfg')">
+            <span class="expand-arrow" id="evidence-tgfg-arrow">►</span>
+            <span>Tgfg/Nezu's Reaction</span>
+            <span class="image-count">7 screenshots</span>
+        </div>
+        <div class="evidence-preview" id="evidence-tgfg-preview">
+            <img src="evidence_assets/evidence_116.webp" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        <div class="evidence-content" id="evidence-tgfg">
+            <div class="scroll-hint">Scroll to view all screenshots</div>
+            <img src="evidence_assets/evidence_116.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_117.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_118.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_119.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_120.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_121.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="evidence_assets/evidence_122.webp" class="screenshot" alt="Screenshot evidence">
+            <div class="end-hint">End of screenshots</div>
+        </div>
+    </div>
+<h2>Summary of David's Actions</h2>
+
+    <p>David has engaged in a sustained pattern of harmful behavior that includes:</p>
+
+    <ol>
+        <li><strong>Deliberate manipulation:</strong> Admittedly engaging in behavior designed to hurt me over an extended period under the guise of "pranks"</li>
+        <li><strong>Violation of trust:</strong> Repeatedly bringing up private medical information (mental health and medication) even after being asked to stop</li>
+        <li><strong>Lying and misinformation:</strong> Actively spreading false information to mutual friends, requiring me to defend myself with evidence</li>
+        <li><strong>Contradictory explanations:</strong> Changing his story multiple times about his motivations and actions</li>
+        <li><strong>Zero attempt at mediation:</strong> Despite all of this, David has never once attempted to actually talk things out, fix the situation, or apologize genuinely</li>
+        <li><strong>Ongoing harassment:</strong> Continuing to badmouth me to anyone who will listen, including reaching out to my friends uninvited</li>
+    </ol>
+
+    <h2>Conclusion</h2>
+
+    <p>The evidence shows a clear pattern: David cannot be trusted. He has a documented reputation for lying, exaggerating situations with half-truths, and stirring up drama. Most concerning is his repeated violation of my trust by using my mental health and medication as ammunition, even after being explicitly told this is not okay.</p>
+
+    <p>David has had countless opportunities to mediate, apologize, and work toward resolution. He has chosen not to. Instead, he continues to talk about me behind my back to anyone who will listen.</p>
+
+    <p><strong>I need David to stop. He needs to stop bringing up my private medical information. He needs to stop lying about me. He needs to stop trying to turn people against me. Just stop.</strong></p>
+
+	<footer style="border-top:1px solid #222;">
+
+	    <h2>The Chuchu, Kayci and David Connection</h2>
+
+    <p>About a month or more ago from writing this (November 2025), Chuchu decided to cut me off. She did this in a very irresponsible way, which she has since refused to acknowledge. Rather than addressing her actions, she now goes out of her way to deliberately hurt me, with Kayci supporting this behavior despite knowing in detail how much of a liar Chuchu has become.</p>
+
+    <p>The connection between David, Chuchu, and Kayci became clear when David started spreading new lies that could only have come from Chuchu. In the January 2026 screenshots from Poke, David claims I use my diagnosed ASD to "win every argument" -- information he says came from Chuchu.</p>
+
+    <div class="important">
+        <strong>This is completely false.</strong> I have no idea what Chuchu is talking about. I am genuinely confident that if you were to ask anyone who actually knows me, they would tell you I refuse to let people justify my behavior with my ASD. I detest that so much. I explicitly tell people to treat me as a normal person, not to make excuses for me.
+    </div>
+
+    <p>This is the pattern with these people: They say one lie with a few words, and then force me to respond with 100 more words of explanation and proof. It's not right, and this is purely designed to hurt me for whatever benefit they get out of it.</p>
+
+    <p>The comment David made about Kayci implies that Chuchu told her very false side of events to David, while knowing exactly how much David will twist and spread misinformation. Chuchu knows David's pattern of behavior -- she was there for much of what's documented here -- yet she chose to feed him lies anyway.</p>
+
+    <p>It's unfortunate, but I am now forced to document Chuchu's behavior separately, and by extension Kayci's role in enabling and supporting what Chuchu does.</p>
+	
+	<p>While the primary focus of this document is David's behavior, it's important to note the connection between David's actions and Chuchu's involvement. As documented in the evidence above, Chuchu has shown a pattern of:</p>
+
+    <ul>
+        <li>Providing David with information that he then weaponized against me</li>
+        <li>Supporting David's narrative despite being aware of the full context</li>
+        <li>Deliberately hurting me while claiming innocence</li>
+    </ul>
+
+    <p>Chuchu's role is significant because she had firsthand knowledge of what actually happened, yet chose to feed David false or misleading information anyway. This suggests either a deliberate attempt to manipulate the situation, or a reckless disregard for the harm her actions would cause.</p>
+
+    <p>A separate, comprehensive document addressing Chuchu's specific behavior and her enabler Kayci will be created to provide the same level of documentation and clarity for that separate but connected issue.</p>
+	</footer>
+    <div class="evidence">
+        <div class="evidence-header" style="background: #2c3e50; cursor: default;">
+            <strong>Related Documentation:</strong>
+        </div>
+        <div style="padding: 15px; background: #ecf0f1;">
+            <p style="margin: 0;"><strong>📄 <a href="https://knewest.github.io/TellChuchuToTakeResponsibility.html" style="color: #3498db; text-decoration: none;">Tell Chuchu To Take Responsibility</a></strong> <br> A comprehensive document detailing Chuchu's pattern of lying, refusal to take responsibility, and deliberate attempts to hurt me, with Kayci's role in supporting this behavior.</p>
+        </div>
+    </div>
+
+	<footer style="text-align:center;padding:20px;color:#888;font-size:12px;border-top:1px solid #222;">
+	  <div style="margin-bottom:8px;">
+		Copyright © 2025-2026 Knew
+	  </div>
+	  <div style="font-size:11px;color:#666;">This document is not licensed under anything. Feel free to use it however you like.</div>
+	</footer>
+
+
+
+<script>
+function updateAllEvidenceTabs() {
+  const evidenceSections = document.querySelectorAll('div.evidence');
+  evidenceSections.forEach(section => {
+    const header = section.querySelector('.evidence-header');
+    const countSpan = header ? header.querySelector('.image-count') : null;
+    const screenshots = section.querySelectorAll('img.screenshot');
+    const count = screenshots.length;
+
+    // Extract evidence ID from section ID (e.g., "evidence-catalyst" -> "catalyst") or header text
+    let evId = section.id ? section.id.replace('evidence-', '') : 'unknown';
+    if (!evId || evId === 'unknown') {
+      const headerText = header ? header.innerText : '';
+      evId = headerText.match(/evidence[- ]*(\w+)/i)?.[1] || 'unknown';
+    }
+
+    if (countSpan) {
+      countSpan.textContent = `${count} screenshots`;
+    }
+
+    // Create or update list of numbers from image filenames (e.g., evidence001.jpg -> 001)
+    let numbersList = section.querySelector('.evidence-numbers');
+    const numbers = [];
+    screenshots.forEach(img => {
+      const src = img.getAttribute('src') || '';
+      const match = src.match(/evidence(\d+)/i);
+      if (match) {
+        numbers.push(match[1]);
+      }
+    });
+    const uniqueNumbers = [...new Set(numbers)].sort((a, b) => Number(a) - Number(b));
+
+    if (uniqueNumbers.length > 0) {
+      if (!numbersList) {
+        numbersList = document.createElement('div');
+        numbersList.className = 'evidence-numbers';
+        numbersList.style.cssText = 'font-size: 14px; color: #666; margin-left: 8px; font-weight: normal;';
+        const existingList = header ? header.querySelector('.evidence-list') : null;
+        if (existingList) {
+          existingList.appendChild(numbersList);
+        } else {
+          const newListContainer = document.createElement('span');
+          newListContainer.className = 'evidence-list';
+          newListContainer.style.cssText = 'margin-left: 8px;';
+          newListContainer.appendChild(numbersList);
+          header.appendChild(newListContainer);
+        }
+      }
+      numbersList.innerHTML = `IDs: ${uniqueNumbers.join(', ')}`;
+    }
+  });
+
+  // Update total images
+  const totalCount = document.querySelectorAll('img.screenshot').length;
+  const totalSpan = document.getElementById('image-count');
+  if (totalSpan) {
+    totalSpan.textContent = totalCount;
+  }
+}
+
+// Initial update
+document.addEventListener('DOMContentLoaded', updateAllEvidenceTabs);
+window.addEventListener('load', updateAllEvidenceTabs);
+
+// Observe for dynamic changes (e.g., new images added)
+const observer = new MutationObserver(updateAllEvidenceTabs);
+observer.observe(document.body, { childList: true, subtree: true });
+</script>
+
+</body></html>
