@@ -1,43 +1,73 @@
-<!DOCTYPE html>
 <html><head> 
     <meta charset="UTF-8">
     <title>Tell David To Stop</title>
     <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-primary: #333333;
+            --border-secondary: #cccccc;
+            --highlight-bg: #fff3cd;
+            --highlight-border: #ffc107;
+            --counter-bg: rgba(51, 51, 51, 0.9);
+            --counter-text: #ffffff;
+            --shadow: rgba(0,0,0,0.1);
+            --shadow-dark: rgba(0,0,0,0.3);
+        }
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --border-primary: #e0e0e0;
+            --border-secondary: #555555;
+            --highlight-bg: #333300;
+            --highlight-border: #cccc00;
+            --counter-bg: rgba(255, 255, 255, 0.9);
+            --counter-text: #000000;
+            --shadow: rgba(0,0,0,0.5);
+            --shadow-dark: rgba(0,0,0,0.5);
+        }
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
             max-width: 900px;
             margin: 20px auto;
             padding: 20px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         h1 {
             text-align: center;
-            border-bottom: 2px solid #333;
+            border-bottom: 2px solid var(--border-primary);
             padding-bottom: 10px;
         }
         h2 {
             margin-top: 25px;
-            color: #333;
+            color: var(--text-primary);
         }
         h3 {
             margin-top: 20px;
-            color: #555;
+            color: var(--text-secondary);
         }
         p {
             margin: 10px 0;
             text-align: justify;
         }
         .evidence {
-            background-color: #f5f5f5;
+            background-color: var(--bg-secondary);
             padding: 15px;
             margin: 15px 0;
-            border-left: 3px solid #666;
+            border-left: 3px solid var(--text-secondary);
         }
         .important {
-            background-color: #fff3cd;
+            background-color: var(--highlight-bg);
             padding: 15px;
             margin: 15px 0;
-            border-left: 3px solid #ffc107;
+            border-left: 3px solid var(--highlight-border);
         }
         .screenshot {
             display: block;
@@ -45,8 +75,8 @@
             width: 100%;
             height: auto;
             margin: 15px auto;
-            border: 1px solid #ccc;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-secondary);
+            box-shadow: 0 2px 4px var(--shadow);
         }
         .evidence-header {
             cursor: pointer;
@@ -54,26 +84,26 @@
             font-weight: bold;
             padding: 12px 8px;
             margin: -15px -15px 0 -15px;
-            background-color: #e8e8e8;
-            border-bottom: 2px solid #999;
+            background-color: var(--bg-secondary);
+            border-bottom: 2px solid var(--border-secondary);
             transition: background-color 0.2s;
         }
         .evidence-header:hover {
-            background-color: #ddd;
+            background-color: color-mix(in srgb, var(--bg-secondary) 90%, var(--text-primary) 10%);
         }
         .expand-arrow {
             display: inline-block;
             margin-right: 8px;
             transition: transform 0.3s ease;
             font-size: 16px;
-            color: #555;
+            color: var(--text-secondary);
         }
         .expand-arrow.expanded {
             transform: rotate(90deg);
         }
-        .image-count {
+        .image-count, .extra, .theme-text {
             font-weight: normal;
-            color: #666;
+            color: var(--text-secondary);
             font-size: 14px;
             margin-left: 8px;
         }
@@ -100,7 +130,7 @@
             left: 0;
             right: 0;
             height: 80px;
-            background: linear-gradient(to bottom, rgba(245,245,245,0) 0%, rgba(245,245,245,1) 100%);
+            background: linear-gradient(to bottom, transparent 0%, var(--bg-secondary) 100%);
             pointer-events: none;
         }
         .evidence-content {
@@ -108,12 +138,12 @@
             margin-top: 10px;
             max-height: 600px;
             overflow-y: auto;
-            border: 2px solid #ccc;
+            border: 2px solid var(--border-secondary);
             border-radius: 4px;
-            background-color: #fff;
+            background-color: var(--bg-primary);
             padding: 10px;
             position: relative;
-            box-shadow: inset 0 10px 15px -10px rgba(0,0,0,0.2);
+            box-shadow: inset 0 10px 15px -10px var(--shadow);
         }
         .evidence-content.show {
             display: block;
@@ -122,41 +152,41 @@
             width: 12px;
         }
         .evidence-content::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: color-mix(in srgb, var(--bg-primary) 50%, var(--bg-secondary) 50%);
             border-radius: 10px;
         }
         .evidence-content::-webkit-scrollbar-thumb {
-            background: #888;
+            background: var(--text-secondary);
             border-radius: 10px;
         }
         .evidence-content::-webkit-scrollbar-thumb:hover {
-            background: #555;
+            background: var(--text-primary);
         }
         .scroll-hint {
             text-align: center;
             padding: 8px;
-            background-color: #fff3cd;
-            border: 1px solid #ffc107;
+            background-color: var(--highlight-bg);
+            border: 1px solid var(--highlight-border);
             border-radius: 4px;
             margin-bottom: 10px;
             font-size: 14px;
-            color: #856404;
+            color: var(--text-primary);
             font-weight: bold;
         }
         .end-hint {
             text-align: center;
             padding: 8px;
-            background-color: #e8e8e8;
-            border: 1px solid #999;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-secondary);
             border-radius: 4px;
             margin-top: 10px;
             font-size: 14px;
-            color: #555;
+            color: var(--text-secondary);
             font-style: italic;
         }
         .audio-container {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
+            background-color: color-mix(in srgb, var(--bg-secondary) 100%, transparent 20%);
+            border: 1px solid var(--border-secondary);
             border-radius: 4px;
             padding: 12px;
             margin: 10px 0;
@@ -165,22 +195,60 @@
             width: 100%;
             margin-top: 8px;
         }
-    
-        .image-counter {
+        .counter-container {
             position: fixed;
             top: 10px;
             left: 10px;
-            background-color: rgba(51, 51, 51, 0.9);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
+            background-color: var(--counter-bg);
+            color: var(--counter-text);
+            padding: 12px 16px;
+            border-radius: 8px;
             font-weight: bold;
             font-size: 16px;
             z-index: 1000;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px var(--shadow-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 200px;
         }
-</style>
-<script>
+        .theme-toggle {
+            background: none;
+            border: 2px solid currentColor;
+            color: inherit;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .theme-toggle:hover {
+            background-color: currentColor;
+            color: var(--counter-bg);
+            transform: scale(1.05);
+        }
+    </style>
+    <script>
+        // Set dark mode by default
+        document.documentElement.setAttribute('data-theme', 'dark');
+        let currentTheme = 'dark';
+
+        function toggleTheme() {
+            if (currentTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                currentTheme = 'light';
+                document.querySelector('.theme-text').textContent = 'Light';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                currentTheme = 'dark';
+                document.querySelector('.theme-text').textContent = 'Dark';
+            }
+        }
+
         function toggleEvidence(id) {
             const content = document.getElementById(id);
             const preview = document.getElementById(id + '-preview');
@@ -194,14 +262,16 @@
                 content.classList.add('show');
                 if (preview) preview.classList.add('hidden');
                 arrow.classList.add('expanded');
-                // Scroll to top of content when expanded
                 content.scrollTop = 0;
             }
         }
     </script>
 </head>
 <body>
-    <div class="image">Total evidence in document loaded: <span id="image-count">0</span></div>
+        <span class="extra">Total evidence: <span id="image-count">112</span></span>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+            <span class="theme-text">Dark</span>
+        </button>
 
     <h1>Tell David To Stop</h1>
 
@@ -234,18 +304,18 @@
         <div class="evidence-header" onclick="toggleEvidence('evidence-catalyst')">
             <span class="expand-arrow" id="evidence-catalyst-arrow">►</span>
             <strong>Evidence - Recent malicious behavior (January 2026):</strong>
-            <span class="image-count">(4 screenshots)</span>
+            <span class="image-count">0 screenshots</span>
         </div>
         <div class="evidence-preview" id="evidence-catalyst-preview">
-            <img src="https://knewest.github.io/evidence_assets/evidence_001.jpg" class="preview-image" alt="Preview">
+            <img src="./evidence_assets/evidence_001.jpg" class="preview-image" alt="Preview">
             <div class="fade-overlay"></div>
         </div>
-        <div class="evidence-content" id="evidence-catalyst">
+        <div class="evidence-content hidden" id="evidence-catalyst">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_002.jpg" class="screenshot" alt="David claiming Knew never told the whole story">
-            <img src="https://knewest.github.io/evidence_assets/evidence_003.jpg" class="screenshot" alt="David claiming Knew is obsessed with him">
-            <img src="https://knewest.github.io/evidence_assets/evidence_004.jpg" class="screenshot" alt="David saying he hopes Knew loses all friends">
-            <img src="https://knewest.github.io/evidence_assets/evidence_005.jpg" class="screenshot" alt="David claiming Knew uses ASD to win arguments">
+            <img src="./evidence_assets/evidence_001.jpg" class="screenshot" alt="David claiming Knew never told the whole story">
+            <img src="./evidence_assets/evidence_002.jpg" class="screenshot" alt="David claiming Knew is obsessed with him">
+            <img src="./evidence_assets/evidence_003.jpg" class="screenshot" alt="David saying he hopes Knew loses all friends">
+            <img src="./evidence_assets/evidence_004.jpg" class="screenshot" alt="David claiming Knew uses ASD to win arguments">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -254,18 +324,18 @@
         <div class="evidence-header" onclick="toggleEvidence('evidence-poke-dms')">
             <span class="expand-arrow" id="evidence-poke-dms-arrow">►</span>
             <strong>Evidence - DMs with Poke showing the full context:</strong>
-            <span class="image-count">(4 screenshots)</span>
+            <span class="image-count">0 screenshots</span>
         </div>
         <div class="evidence-preview" id="evidence-poke-dms-preview">
-            <img src="https://knewest.github.io/evidence_assets/evidence_006.webp" class="preview-image" alt="Preview">
+            <img src="./evidence_assets/evidence_005.webp" class="preview-image" alt="Preview">
             <div class="fade-overlay"></div>
         </div>
         <div class="evidence-content" id="evidence-poke-dms">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_007.webp" class="screenshot" alt="Chat with Poke screenshot 1">
-            <img src="https://knewest.github.io/evidence_assets/evidence_008.webp" class="screenshot" alt="Chat with Poke screenshot 2">
-            <img src="https://knewest.github.io/evidence_assets/evidence_009.webp" class="screenshot" alt="Chat with Poke screenshot 3">
-            <img src="https://knewest.github.io/evidence_assets/evidence_010.webp" class="screenshot" alt="Chat with Poke screenshot 4">
+            <img src="./evidence_assets/evidence_005.webp" class="screenshot" alt="Chat with Poke screenshot 1">
+            <img src="./evidence_assets/evidence_006.webp" class="screenshot" alt="Chat with Poke screenshot 2">
+            <img src="./evidence_assets/evidence_007.webp" class="screenshot" alt="Chat with Poke screenshot 3">
+            <img src="./evidence_assets/evidence_008.webp" class="screenshot" alt="Chat with Poke screenshot 4">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -302,17 +372,17 @@
         <div class="evidence-header" onclick="toggleEvidence('evidence-1')">
             <span class="expand-arrow" id="evidence-1-arrow">►</span>
             <strong>Evidence - Display Name Conversation:</strong>
-            <span class="image-count">(3 screenshots)</span>
+            <span class="image-count">0 screenshots</span>
         </div>
         <div class="evidence-preview" id="evidence-1-preview">
-            <img src="https://knewest.github.io/evidence_assets/evidence_011.avif" class="preview-image" alt="Preview">
+            <img src="./evidence_assets/evidence_009.avif" class="preview-image" alt="Preview">
             <div class="fade-overlay"></div>
         </div>
         <div class="evidence-content" id="evidence-1">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_012.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_013.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_014.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_009.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_010.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_011.avif" class="screenshot" alt="Screenshot evidence">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -335,16 +405,16 @@
         <div class="evidence-header" onclick="toggleEvidence('evidence-2')">
             <span class="expand-arrow" id="evidence-2-arrow">►</span>
             <strong>Evidence - What Tgfg/Nezu was told by David:</strong>
-            <span class="image-count">(2 screenshots)</span>
+            <span class="image-count">0 screenshots</span>
         </div>
         <div class="evidence-preview" id="evidence-2-preview">
-            <img src="https://knewest.github.io/evidence_assets/evidence_015.webp" class="preview-image" alt="Preview">
+            <img src="./evidence_assets/evidence_012.webp" class="preview-image" alt="Preview">
             <div class="fade-overlay"></div>
         </div>
         <div class="evidence-content" id="evidence-2">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_016.webp" class="screenshot" alt="Screenshot evidence">
-			<img src="https://knewest.github.io/evidence_assets/evidence_017.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_012.webp" class="screenshot" alt="Screenshot evidence">
+			<img src="./evidence_assets/evidence_013.webp" class="screenshot" alt="Screenshot evidence">
 			<p>Note: The screenshot has since expired showing what David didn't want me to see, but my screenshot of the screenshot displays his intentions.</p>
             <div class="end-hint">End of screenshots</div>
         </div>
@@ -357,17 +427,17 @@
         <div class="evidence-header" onclick="toggleEvidence('evidence-3')">
             <span class="expand-arrow" id="evidence-3-arrow">►</span>
             <strong>Evidence - Group discussion about David's reputation:</strong>
-            <span class="image-count">(3 screenshots)</span>
+            <span class="image-count">0 screenshots</span>
         </div>
         <div class="evidence-preview" id="evidence-3-preview">
-            <img src="https://knewest.github.io/evidence_assets/evidence_018.webp" class="preview-image" alt="Preview">
+            <img src="./evidence_assets/evidence_014.webp" class="preview-image" alt="Preview">
             <div class="fade-overlay"></div>
         </div>
         <div class="evidence-content" id="evidence-3">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_019.webp" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_020.webp" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_021.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_014.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_015.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_016.webp" class="screenshot" alt="Screenshot evidence">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -384,27 +454,27 @@
         <div class="evidence-header" onclick="toggleEvidence('evidence-5')">
             <span class="expand-arrow" id="evidence-5-arrow">►</span>
             <strong>Evidence - Poke's conversation with David:</strong>
-            <span class="image-count">(13 screenshots)</span>
+            <span class="image-count">0 screenshots</span>
         </div>
         <div class="evidence-preview" id="evidence-5-preview">
-            <img src="https://knewest.github.io/evidence_assets/evidence_022.avif" class="preview-image" alt="Preview">
+            <img src="./evidence_assets/evidence_017.avif" class="preview-image" alt="Preview">
             <div class="fade-overlay"></div>
         </div>
         <div class="evidence-content" id="evidence-5">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_023.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_024.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_025.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_026.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_027.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_028.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_029.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_030.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_031.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_032.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_033.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_034.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_035.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_017.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_018.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_019.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_020.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_021.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_022.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_023.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_024.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_025.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_026.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_027.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_028.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_029.avif" class="screenshot" alt="Screenshot evidence">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -420,22 +490,22 @@
         <div class="evidence-header" onclick="toggleEvidence('evidence-6')">
             <span class="expand-arrow" id="evidence-6-arrow">►</span>
             <strong>Evidence - DMs with Tgfg showing the full context:</strong>
-            <span class="image-count">(8 screenshots)</span>
+            <span class="image-count">0 screenshots</span>
         </div>
         <div class="evidence-preview" id="evidence-6-preview">
-            <img src="https://knewest.github.io/evidence_assets/evidence_036.webp" class="preview-image" alt="Preview">
+            <img src="./evidence_assets/evidence_030.webp" class="preview-image" alt="Preview">
             <div class="fade-overlay"></div>
         </div>
         <div class="evidence-content" id="evidence-6">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_037.webp" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_038.webp" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_039.webp" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_040.webp" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_041.webp" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_042.webp" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_043.webp" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_044.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_030.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_031.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_032.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_033.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_034.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_035.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_036.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_037.webp" class="screenshot" alt="Screenshot evidence">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -443,17 +513,17 @@
         <div class="evidence-header" onclick="toggleEvidence('evidence-7')">
             <span class="expand-arrow" id="evidence-7-arrow">►</span>
             <strong>Evidence - Proof David was lying about our DMs:</strong>
-            <span class="image-count">(3 screenshots)</span>
+            <span class="image-count">0 screenshots</span>
         </div>
         <div class="evidence-preview" id="evidence-7-preview">
-            <img src="https://knewest.github.io/evidence_assets/evidence_045.avif" class="preview-image" alt="Preview">
+            <img src="./evidence_assets/evidence_038.avif" class="preview-image" alt="Preview">
             <div class="fade-overlay"></div>
         </div>
         <div class="evidence-content" id="evidence-7">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_046.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_047.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_048.png" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_038.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_039.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_040.png" class="screenshot" alt="Screenshot evidence">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -469,38 +539,38 @@
         <div class="evidence-header" onclick="toggleEvidence('evidence-8')">
             <span class="expand-arrow" id="evidence-8-arrow">►</span>
             <strong>Evidence - Argument where David admits it was "a prank":</strong>
-            <span class="image-count">(24 screenshots)</span>
+            <span class="image-count">0 screenshots</span>
         </div>
         <div class="evidence-preview" id="evidence-8-preview">
-            <img src="https://knewest.github.io/evidence_assets/evidence_049.avif" class="preview-image" alt="Preview">
+            <img src="./evidence_assets/evidence_041.avif" class="preview-image" alt="Preview">
             <div class="fade-overlay"></div>
         </div>
         <div class="evidence-content" id="evidence-8">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_050.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_051.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_052.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_053.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_054.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_055.png" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_056.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_057.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_058.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_059.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_060.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_061.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_062.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_063.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_064.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_065.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_066.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_067.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_068.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_069.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_070.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_071.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_072.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_073.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_041.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_042.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_043.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_044.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_045.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_046.png" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_047.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_048.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_049.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_050.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_051.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_052.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_053.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_054.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_055.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_056.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_057.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_058.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_059.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_060.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_061.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_062.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_063.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_064.avif" class="screenshot" alt="Screenshot evidence">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -514,18 +584,18 @@
         <div class="evidence-header" onclick="toggleEvidence('evidence-9')">
             <span class="expand-arrow" id="evidence-9-arrow">►</span>
             <strong>Evidence - Discussion with friend about David's behavior:</strong>
-            <span class="image-count">(4 screenshots)</span>
+            <span class="image-count">0 screenshots</span>
         </div>
         <div class="evidence-preview" id="evidence-9-preview">
-            <img src="https://knewest.github.io/evidence_assets/evidence_074.avif" class="preview-image" alt="Preview">
+            <img src="./evidence_assets/evidence_065.avif" class="preview-image" alt="Preview">
             <div class="fade-overlay"></div>
         </div>
         <div class="evidence-content" id="evidence-9">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_075.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_076.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_077.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_078.png" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_065.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_066.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_067.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_068.png" class="screenshot" alt="Screenshot evidence">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -547,7 +617,11 @@
         <div class="evidence-header" onclick="toggleEvidence('evidence-10')">
             <span class="expand-arrow" id="evidence-10-arrow">►</span>
             <strong>Evidence - Chuchu's comments about David contacting her:</strong>
-            <span class="image-count">(4 screenshots, 3 voice messages)</span>
+            <span class="image-count">0 screenshots</span><span class="extra">  //　3 voice messages</span>
+        </div>
+        <div class="evidence-preview" id="evidence-10-preview">
+            <img src="./evidence_assets/evidence_069.webp" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
         </div>
         <div class="evidence-content" id="evidence-10">
             <div class="scroll-hint">Scroll to view all screenshots</div>
@@ -580,10 +654,10 @@
             <div class="screenshot-section">
                 <strong>Chuchu's comments in the Group Chat about David:</strong>
                 <div class="image-grid">
-                    <img src="https://knewest.github.io/evidence_assets/evidence_079.webp" alt="Chuchu's comment about David" class="screenshot">
-                    <img src="https://knewest.github.io/evidence_assets/evidence_080.webp" alt="Chuchu's GC comment 1" class="screenshot">
-                    <img src="https://knewest.github.io/evidence_assets/evidence_081.webp" alt="Chuchu's GC comment 2" class="screenshot">
-                    <img src="https://knewest.github.io/evidence_assets/evidence_082.webp" alt="Chuchu's GC comment 3" class="screenshot">
+                    <img src="./evidence_assets/evidence_069.webp" alt="Chuchu's comment about David" class="screenshot">
+                    <img src="./evidence_assets/evidence_070.webp" alt="Chuchu's GC comment 1" class="screenshot">
+                    <img src="./evidence_assets/evidence_071.webp" alt="Chuchu's GC comment 2" class="screenshot">
+                    <img src="./evidence_assets/evidence_072.webp" alt="Chuchu's GC comment 3" class="screenshot">
                 </div>
             </div>
             
@@ -602,44 +676,44 @@
         <div class="evidence-header" onclick="toggleEvidence('evidence-11')">
             <span class="expand-arrow" id="evidence-11-arrow">►</span>
             <strong>Evidence - Additional arguments showing the pattern:</strong>
-            <span class="image-count">(30 screenshots)</span>
+            <span class="image-count">0 screenshots</span>
         </div>
         <div class="evidence-preview" id="evidence-11-preview">
-            <img src="https://knewest.github.io/evidence_assets/evidence_083.avif" class="preview-image" alt="Preview">
+            <img src="./evidence_assets/evidence_073.avif" class="preview-image" alt="Preview">
             <div class="fade-overlay"></div>
         </div>
         <div class="evidence-content" id="evidence-11">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_084.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_085.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_086.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_087.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_088.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_089.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_090.png" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_091.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_092.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_093.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_094.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_095.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_096.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_097.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_098.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_099.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_100.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_101.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_102.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_103.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_104.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_105.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_106.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_107.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_108.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_109.png" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_110.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_111.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_112.avif" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_113.png" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_073.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_074.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_075.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_076.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_077.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_078.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_079.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_080.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_081.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_082.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_083.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_084.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_085.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_086.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_087.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_088.png" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_089.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_090.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_091.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_092.png" class="screenshot" alt="Screenshot evidence">
+			<img src="./evidence_assets/evidence_093.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_094.avif" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_095.avif" class="screenshot" alt="Screenshot evidence">
+			<img src="./evidence_assets/evidence_096.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_097.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_098.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_099.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_100.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_101.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_102.png" class="screenshot" alt="Screenshot evidence">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -654,17 +728,17 @@
         <div class="evidence-header" onclick="toggleEvidence('evidence-dina')">
             <span class="expand-arrow" id="evidence-dina-arrow">►</span>
             <span>Dina's Comments</span>
-            <span class="image-count">3 screenshots</span>
+            <span class="image-count">0 screenshots</span>
         </div>
         <div class="evidence-preview" id="evidence-dina-preview">
-            <img src="https://knewest.github.io/evidence_assets/evidence_113.webp" class="preview-image" alt="Preview">
+            <img src="./evidence_assets/evidence_103.webp" class="preview-image" alt="Preview">
             <div class="fade-overlay"></div>
         </div>
         <div class="evidence-content" id="evidence-dina">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_113.webp" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_114.webp" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_115.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_103.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_104.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_105.webp" class="screenshot" alt="Screenshot evidence">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -674,21 +748,21 @@
         <div class="evidence-header" onclick="toggleEvidence('evidence-tgfg')">
             <span class="expand-arrow" id="evidence-tgfg-arrow">►</span>
             <span>Tgfg/Nezu's Comments</span>
-            <span class="image-count">7 screenshots</span>
+            <span class="image-count">0 screenshots</span>
         </div>
         <div class="evidence-preview" id="evidence-tgfg-preview">
-            <img src="https://knewest.github.io/evidence_assets/evidence_116.webp" class="preview-image" alt="Preview">
+            <img src="./evidence_assets/evidence_106.webp" class="preview-image" alt="Preview">
             <div class="fade-overlay"></div>
         </div>
         <div class="evidence-content" id="evidence-tgfg">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_116.webp" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_117.webp" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_118.webp" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_119.webp" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_120.webp" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_121.webp" class="screenshot" alt="Screenshot evidence">
-            <img src="https://knewest.github.io/evidence_assets/evidence_122.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_106.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_107.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_108.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_109.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_110.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_111.webp" class="screenshot" alt="Screenshot evidence">
+            <img src="./evidence_assets/evidence_112.webp" class="screenshot" alt="Screenshot evidence">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -829,5 +903,4 @@ window.addEventListener('load', updateAllEvidenceTabs);
 const observer = new MutationObserver(updateAllEvidenceTabs);
 observer.observe(document.body, { childList: true, subtree: true });
 </script>
-
 </body></html>
