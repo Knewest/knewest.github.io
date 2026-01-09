@@ -1,5 +1,6 @@
 <html><head> 
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Tell David To Stop</title>
     <style>
         :root {
@@ -231,6 +232,60 @@
             color: var(--counter-bg);
             transform: scale(1.05);
         }
+    
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            body {
+                overflow-x: hidden !important;
+                -webkit-overflow-scrolling: touch;
+                width: 100%;
+                position: relative;
+            }
+
+            .counter-container {
+                position: fixed;
+                top: 5px;
+                left: 5px;
+                right: auto;
+                padding: 8px 12px;
+                font-size: 13px;
+                min-width: 180px;
+                max-width: calc(100% - 20px);
+                z-index: 9999;
+            }
+
+            .screenshot, .preview-image {
+                max-width: 100% !important;
+                width: 100% !important;
+                height: auto !important;
+                display: block;
+            }
+
+            .evidence-content {
+                max-height: 70vh !important;
+            }
+
+            h1 {
+                font-size: 24px;
+                word-wrap: break-word;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            p, li {
+                font-size: 16px;
+                line-height: 1.6;
+            }
+        }
+
+        /* Ensure images are responsive */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 	<script>
         // Set dark mode by default
@@ -263,6 +318,14 @@
                 if (preview) preview.classList.add('hidden');
                 arrow.classList.add('expanded');
                 content.scrollTop = 0;
+                // Load images when section is expanded
+                const images = content.querySelectorAll('img[data-src]');
+                images.forEach(img => {
+                    if (img.dataset.src && !img.dataset.loaded) {
+                        img.src = img.dataset.src;
+                        img.dataset.loaded = 'true';
+                    }
+                });
             }
         }
     </script>
@@ -312,10 +375,10 @@
         </div>
         <div class="evidence-content hidden" id="evidence-catalyst">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_001.jpg" class="screenshot" alt="David claiming Knew never told the whole story" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_002.jpg" class="screenshot" alt="David claiming Knew is obsessed with him" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_003.jpg" class="screenshot" alt="David saying he hopes Knew loses all friends" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_004.jpg" class="screenshot" alt="David claiming Knew uses ASD to win arguments" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_001.jpg" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="David claiming Knew never told the whole story" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_002.jpg" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="David claiming Knew is obsessed with him" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_003.jpg" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="David saying he hopes Knew loses all friends" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_004.jpg" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="David claiming Knew uses ASD to win arguments" loading="lazy">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -332,10 +395,10 @@
         </div>
         <div class="evidence-content" id="evidence-poke-dms">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_005.webp" class="screenshot" alt="Chat with Poke screenshot 1" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_006.webp" class="screenshot" alt="Chat with Poke screenshot 2" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_007.webp" class="screenshot" alt="Chat with Poke screenshot 3" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_008.webp" class="screenshot" alt="Chat with Poke screenshot 4" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_005.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Chat with Poke screenshot 1" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_006.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Chat with Poke screenshot 2" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_007.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Chat with Poke screenshot 3" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_008.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Chat with Poke screenshot 4" loading="lazy">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -380,9 +443,9 @@
         </div>
         <div class="evidence-content" id="evidence-1">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_009.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_010.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_011.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_009.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_010.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_011.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -413,8 +476,8 @@
         </div>
         <div class="evidence-content" id="evidence-2">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_012.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-			<img src="https://knewest.github.io/evidence_assets/evidence_013.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_012.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+			<img data-src="https://knewest.github.io/evidence_assets/evidence_013.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
 			<p>Note: The screenshot has since expired showing what David didn't want me to see, but my screenshot of the screenshot displays his intentions.</p>
             <div class="end-hint">End of screenshots</div>
         </div>
@@ -435,9 +498,9 @@
         </div>
         <div class="evidence-content" id="evidence-3">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_014.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_015.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_016.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_014.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_015.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_016.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -462,19 +525,19 @@
         </div>
         <div class="evidence-content" id="evidence-5">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_017.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_018.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_019.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_020.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_021.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_022.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_023.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_024.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_025.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_026.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_027.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_028.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_029.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_017.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_018.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_019.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_020.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_021.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_022.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_023.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_024.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_025.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_026.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_027.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_028.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_029.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -498,14 +561,14 @@
         </div>
         <div class="evidence-content" id="evidence-6">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_030.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_031.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_032.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_033.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_034.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_035.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_036.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_037.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_030.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_031.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_032.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_033.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_034.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_035.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_036.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_037.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -521,9 +584,9 @@
         </div>
         <div class="evidence-content" id="evidence-7">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_038.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_039.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_040.png" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_038.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_039.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_040.png" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -547,30 +610,30 @@
         </div>
         <div class="evidence-content" id="evidence-8">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_041.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_042.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_043.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_044.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_045.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_046.png" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_047.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_048.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_049.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_050.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_051.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_052.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_053.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_054.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_055.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_056.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_057.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_058.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_059.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_060.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_061.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_062.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_063.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_064.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_041.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_042.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_043.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_044.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_045.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_046.png" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_047.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_048.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_049.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_050.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_051.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_052.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_053.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_054.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_055.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_056.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_057.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_058.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_059.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_060.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_061.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_062.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_063.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_064.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -592,10 +655,10 @@
         </div>
         <div class="evidence-content" id="evidence-9">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_065.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_066.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_067.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_068.png" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_065.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_066.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_067.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_068.png" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -654,10 +717,10 @@
             <div class="screenshot-section">
                 <strong>Chuchu's comments in the Group Chat about David:</strong>
                 <div class="image-grid">
-                    <img src="https://knewest.github.io/evidence_assets/evidence_069.webp" alt="Chuchu's comment about David" class="screenshot" loading="lazy">
-                    <img src="https://knewest.github.io/evidence_assets/evidence_070.webp" alt="Chuchu's GC comment 1" class="screenshot" loading="lazy">
-                    <img src="https://knewest.github.io/evidence_assets/evidence_071.webp" alt="Chuchu's GC comment 2" class="screenshot" loading="lazy">
-                    <img src="https://knewest.github.io/evidence_assets/evidence_072.webp" alt="Chuchu's GC comment 3" class="screenshot" loading="lazy">
+                    <img src="https://knewest.github.io/evidence_assets/evidence_069.webp" alt="Chuchu's comment about David" class="screenshot">
+                    <img src="https://knewest.github.io/evidence_assets/evidence_070.webp" alt="Chuchu's GC comment 1" class="screenshot">
+                    <img src="https://knewest.github.io/evidence_assets/evidence_071.webp" alt="Chuchu's GC comment 2" class="screenshot">
+                    <img src="https://knewest.github.io/evidence_assets/evidence_072.webp" alt="Chuchu's GC comment 3" class="screenshot">
                 </div>
             </div>
             
@@ -684,36 +747,36 @@
         </div>
         <div class="evidence-content" id="evidence-11">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_073.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_074.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_075.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_076.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_077.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_078.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_079.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_080.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_081.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_082.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_083.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_084.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_085.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_086.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_087.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_088.png" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_089.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_090.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_091.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_092.png" class="screenshot" alt="Screenshot evidence" loading="lazy">
-			<img src="https://knewest.github.io/evidence_assets/evidence_093.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_094.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_095.avif" class="screenshot" alt="Screenshot evidence" loading="lazy">
-			<img src="https://knewest.github.io/evidence_assets/evidence_096.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_097.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_098.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_099.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_100.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_101.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_102.png" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_073.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_074.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_075.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_076.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_077.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_078.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_079.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_080.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_081.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_082.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_083.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_084.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_085.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_086.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_087.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_088.png" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_089.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_090.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_091.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_092.png" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+			<img data-src="https://knewest.github.io/evidence_assets/evidence_093.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_094.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_095.avif" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+			<img data-src="https://knewest.github.io/evidence_assets/evidence_096.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_097.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_098.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_099.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_100.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_101.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_102.png" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -736,9 +799,9 @@
         </div>
         <div class="evidence-content" id="evidence-dina">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_103.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_104.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_105.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_103.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_104.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_105.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
@@ -756,13 +819,13 @@
         </div>
         <div class="evidence-content" id="evidence-tgfg">
             <div class="scroll-hint">Scroll to view all screenshots</div>
-            <img src="https://knewest.github.io/evidence_assets/evidence_106.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_107.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_108.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_109.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_110.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_111.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
-            <img src="https://knewest.github.io/evidence_assets/evidence_112.webp" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_106.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_107.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_108.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_109.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_110.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_111.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
+            <img data-src="https://knewest.github.io/evidence_assets/evidence_112.webp" src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23e0e0e0\' width=\'100\' height=\'100\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23666\' font-size=\'14\'%3ELoading...%3C/text%3E%3C/svg%3E" class="screenshot" alt="Screenshot evidence" loading="lazy">
             <div class="end-hint">End of screenshots</div>
         </div>
     </div>
