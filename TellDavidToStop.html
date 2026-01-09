@@ -325,19 +325,33 @@
                 content.scrollTop = 0;
 
                 // Load images progressively
-                const images = Array.from(content.querySelectorAll('img[data-src]'));
-                let idx = 0;
-                function loadNext() {
-                    if (idx >= images.length) return;
-                    const img = images[idx];
-                    if (img.dataset.src && !img.dataset.loaded) {
-                        img.src = img.dataset.src;
-                        img.dataset.loaded = 'true';
-                    }
-                    idx++;
-                    if (idx < images.length) setTimeout(loadNext, 100);
-                }
-                loadNext();
+				const images = Array.from(content.querySelectorAll('img[data-src]'));
+				let idx = 0;
+
+				const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+				const BATCH_SIZE = isMobile ? 2 : 5;
+				const DELAY = isMobile ? 300 : 100;    // mobile : desktop;
+
+				function loadNext() {
+					if (idx >= images.length) return;
+					
+					// Load a small batch instead of one at a time
+					const batch = images.slice(idx, idx + BATCH_SIZE);
+					batch.forEach(img => {
+						if (img.dataset.src && !img.dataset.loaded) {
+							img.src = img.dataset.src;
+							img.dataset.loaded = 'true';
+						}
+					});
+					
+					idx += BATCH_SIZE;
+					
+					if (idx < images.length) {
+						setTimeout(loadNext, DELAY);
+					}
+				}
+
+				loadNext();
             }
         }
     </script>
@@ -978,333 +992,4 @@ window.addEventListener('load', updateAllEvidenceTabs);
 const observer = new MutationObserver(updateAllEvidenceTabs);
 observer.observe(document.body, { childList: true, subtree: true });
 </script>
-
-<script>
-// BASE64 WebP Lossless encoding to try fix mobile rendering. Crazy hack.
-(function() {
-    'use strict';
-
-    const CORS_PROXIES = [
-        'https://corsproxy.io/?',
-        'https://api.codetabs.com/v1/proxy?quest=',
-        'https://api.allorigins.win/raw?url='
-    ];
-
-    const DB_NAME = 'WebPImageCache';
-    const DB_VERSION = 1;
-    const STORE_NAME = 'images';
-    let db = null;
-    const needsProxy = new Set();
-
-    function initDB() {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(DB_NAME, DB_VERSION);
-            request.onerror = () => {
-                console.error('IndexedDB failed to open');
-                reject(request.error);
-            };
-            request.onsuccess = () => {
-                db = request.result;
-                console.log('IndexedDB initialized');
-                resolve(db);
-            };
-            request.onupgradeneeded = (event) => {
-                const db = event.target.result;
-                if (!db.objectStoreNames.contains(STORE_NAME)) {
-                    const objectStore = db.createObjectStore(STORE_NAME, { keyPath: 'url' });
-                    objectStore.createIndex('timestamp', 'timestamp', { unique: false });
-                    console.log('IndexedDB store created');
-                }
-            };
-        });
-    }
-
-    function getCachedImage(url) {
-        return new Promise((resolve, reject) => {
-            if (!db) {
-                reject(new Error('DB not initialized'));
-                return;
-            }
-            const transaction = db.transaction([STORE_NAME], 'readonly');
-            const store = transaction.objectStore(STORE_NAME);
-            const request = store.get(url);
-            request.onsuccess = () => {
-                if (request.result) {
-                    resolve(request.result.webpData);
-                } else {
-                    reject(new Error('Not in cache'));
-                }
-            };
-            request.onerror = () => reject(request.error);
-        });
-    }
-
-    function cacheImage(url, webpData) {
-        return new Promise((resolve, reject) => {
-            if (!db) {
-                reject(new Error('DB not initialized'));
-                return;
-            }
-            const transaction = db.transaction([STORE_NAME], 'readwrite');
-            const store = transaction.objectStore(STORE_NAME);
-            const request = store.put({
-                url: url,
-                webpData: webpData,
-                timestamp: Date.now()
-            });
-            request.onsuccess = () => resolve();
-            request.onerror = () => reject(request.error);
-        });
-    }
-
-    function getOptimalDimensions(naturalWidth, naturalHeight, maxDisplayWidth) {
-        const dpr = window.devicePixelRatio || 1;
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        const screenWidth = window.screen.width;
-        const maxWidth = isMobile ? Math.min(screenWidth * dpr, maxDisplayWidth || naturalWidth) : naturalWidth;
-
-        if (naturalWidth > maxWidth) {
-            const ratio = maxWidth / naturalWidth;
-            return {
-                width: Math.floor(naturalWidth * ratio),
-                height: Math.floor(naturalHeight * ratio),
-                scaled: true
-            };
-        }
-
-        return {
-            width: naturalWidth,
-            height: naturalHeight,
-            scaled: false
-        };
-    }
-
-    function loadThroughProxy(originalSrc, proxyIndex = 0) {
-        return new Promise((resolve, reject) => {
-            if (proxyIndex >= CORS_PROXIES.length) {
-                reject(new Error('All proxies failed'));
-                return;
-            }
-
-            const proxyUrl = CORS_PROXIES[proxyIndex] + encodeURIComponent(originalSrc);
-
-            fetch(proxyUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}`);
-                    }
-                    return response.blob();
-                })
-                .then(blob => {
-                    const objectUrl = URL.createObjectURL(blob);
-                    const img = new Image();
-                    img.onload = () => resolve({ img, objectUrl });
-                    img.onerror = () => {
-                        URL.revokeObjectURL(objectUrl);
-                        reject(new Error('Failed to load blob'));
-                    };
-                    img.src = objectUrl;
-                })
-                .catch(error => {
-                    console.warn(`Proxy ${proxyIndex + 1} failed, trying next...`);
-                    loadThroughProxy(originalSrc, proxyIndex + 1)
-                        .then(resolve)
-                        .catch(reject);
-                });
-        });
-    }
-
-    function convertToWebP(img, originalSrc, maxDisplayWidth) {
-        const dimensions = getOptimalDimensions(
-            img.naturalWidth, 
-            img.naturalHeight,
-            maxDisplayWidth
-        );
-
-        const canvas = document.createElement('canvas');
-        canvas.width = dimensions.width;
-        canvas.height = dimensions.height;
-
-        const ctx = canvas.getContext('2d');
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
-        ctx.drawImage(img, 0, 0, dimensions.width, dimensions.height);
-
-        const webpData = canvas.toDataURL('image/webp', 1.0);
-        const sizeKB = Math.round(webpData.length / 1024);
-        const scaleInfo = dimensions.scaled ? ` (${dimensions.width}x${dimensions.height})` : '';
-
-        return { webpData, sizeKB, scaleInfo };
-    }
-
-    function convertImageToWebP(img, originalSrc) {
-        return new Promise((resolve, reject) => {
-            if (originalSrc.startsWith('data:') || originalSrc.endsWith('.svg')) {
-                reject(new Error('Skipping data URI or SVG'));
-                return;
-            }
-
-            getCachedImage(originalSrc)
-                .then(cachedData => {
-                    console.log('Loaded from cache:', originalSrc.substring(0, 60) + '...');
-                    resolve(cachedData);
-                })
-                .catch(() => {
-                    const shouldUseProxy = needsProxy.has(originalSrc) || 
-                                          originalSrc.includes('github.com');
-
-                    if (shouldUseProxy) {
-                        console.log('Loading through proxy:', originalSrc.substring(0, 60) + '...');
-                        loadThroughProxy(originalSrc)
-                            .then(({ img: proxyImg, objectUrl }) => {
-                                try {
-                                    const maxDisplayWidth = img.hasAttribute('width') ? 
-                                        parseInt(img.getAttribute('width')) : 
-                                        img.parentElement ? img.parentElement.offsetWidth : undefined;
-
-                                    const { webpData, sizeKB, scaleInfo } = convertToWebP(proxyImg, originalSrc, maxDisplayWidth);
-                                    URL.revokeObjectURL(objectUrl);
-                                    cacheImage(originalSrc, webpData)
-                                        .then(() => console.log(`Cached ${sizeKB}KB${scaleInfo}`))
-                                        .catch(err => console.warn('Cache save failed:', err));
-                                    resolve(webpData);
-                                } catch (error) {
-                                    URL.revokeObjectURL(objectUrl);
-                                    reject(error);
-                                }
-                            })
-                            .catch(reject);
-                    } else {
-                        const tryNaturalLoad = () => {
-                            if (img.complete && img.naturalWidth > 0) {
-                                attemptConversion();
-                            } else {
-                                const onLoad = () => {
-                                    img.removeEventListener('load', onLoad);
-                                    img.removeEventListener('error', onError);
-                                    attemptConversion();
-                                };
-                                const onError = () => {
-                                    img.removeEventListener('load', onLoad);
-                                    img.removeEventListener('error', onError);
-                                    reject(new Error('Failed to load image'));
-                                };
-                                img.addEventListener('load', onLoad);
-                                img.addEventListener('error', onError);
-                            }
-                        };
-
-                        const attemptConversion = () => {
-                            try {
-                                const maxDisplayWidth = img.hasAttribute('width') ? 
-                                    parseInt(img.getAttribute('width')) : 
-                                    img.parentElement ? img.parentElement.offsetWidth : undefined;
-
-                                const { webpData, sizeKB, scaleInfo } = convertToWebP(img, originalSrc, maxDisplayWidth);
-                                cacheImage(originalSrc, webpData)
-                                    .then(() => console.log(`Cached ${sizeKB}KB${scaleInfo}`))
-                                    .catch(err => console.warn('Cache save failed:', err));
-                                resolve(webpData);
-                            } catch (error) {
-                                if (error.message.includes('tainted') || error.message.includes('Tainted')) {
-                                    console.log('Tainted canvas detected, retrying with proxy...');
-                                    needsProxy.add(originalSrc);
-                                    loadThroughProxy(originalSrc)
-                                        .then(({ img: proxyImg, objectUrl }) => {
-                                            try {
-                                                const { webpData, sizeKB, scaleInfo } = convertToWebP(proxyImg, originalSrc, maxDisplayWidth);
-                                                URL.revokeObjectURL(objectUrl);
-                                                cacheImage(originalSrc, webpData)
-                                                    .then(() => console.log(`Cached ${sizeKB}KB${scaleInfo}`))
-                                                    .catch(err => console.warn('Cache save failed:', err));
-                                                resolve(webpData);
-                                            } catch (err) {
-                                                URL.revokeObjectURL(objectUrl);
-                                                reject(err);
-                                            }
-                                        })
-                                        .catch(reject);
-                                } else {
-                                    reject(error);
-                                }
-                            }
-                        };
-
-                        tryNaturalLoad();
-                    }
-                });
-        });
-    }
-
-    async function processAllImages() {
-        const allImages = document.querySelectorAll('img');
-        console.log(`Processing ${allImages.length} images...`);
-        
-        let converted = 0;
-        let cached = 0;
-        let failed = 0;
-
-        for (let img of allImages) {
-            const originalSrc = img.getAttribute('data-src') || img.src;
-
-            if (originalSrc.startsWith('data:image/webp') || 
-                img.hasAttribute('data-webp-processed') ||
-                originalSrc.startsWith('data:image/svg')) {
-                continue;
-            }
-
-            if (img.hasAttribute('data-src') && !img.src.startsWith('http')) {
-                img.src = originalSrc;
-            }
-
-            try {
-                const startTime = Date.now();
-                const webpData = await convertImageToWebP(img, originalSrc);
-                const loadTime = Date.now() - startTime;
-
-                img.src = webpData;
-                img.removeAttribute('data-src');
-                img.setAttribute('data-webp-processed', 'true');
-                img.setAttribute('data-original-src', originalSrc);
-
-                if (loadTime < 100) {
-                    cached++;
-                } else {
-                    converted++;
-                }
-
-                console.log(`Converted [${loadTime}ms]: ${originalSrc.substring(0, 60)}...`);
-            } catch (error) {
-                failed++;
-                console.warn(`Failed: ${originalSrc.substring(0, 60)}...`, error.message);
-            }
-
-            await new Promise(resolve => setTimeout(resolve, 50));
-        }
-
-        console.log('========================================');
-        console.log(`Conversion complete - Total: ${allImages.length}`);
-        console.log(`Converted: ${converted} | Cached: ${cached} | Failed: ${failed}`);
-        console.log('========================================');
-    }
-
-    initDB()
-        .then(() => {
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', processAllImages);
-            } else {
-                processAllImages();
-            }
-        })
-        .catch(error => {
-            console.error('Failed to initialize IndexedDB:', error);
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', processAllImages);
-            } else {
-                processAllImages();
-            }
-        });
-})();
-</script>
-
 </body></html>
