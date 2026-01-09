@@ -1,297 +1,7 @@
 <head> 
     <meta charset="UTF-8">
     <title>Tell David To Stop</title>
-    <style>
-        :root {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f5f5f5;
-            --text-primary: #333333;
-            --text-secondary: #666666;
-            --border-primary: #333333;
-            --border-secondary: #cccccc;
-            --highlight-bg: #fff3cd;
-            --highlight-border: #ffc107;
-            --counter-bg: rgba(51, 51, 51, 0.9);
-            --counter-text: #ffffff;
-            --shadow: rgba(0,0,0,0.1);
-            --shadow-dark: rgba(0,0,0,0.3);
-        }
-        [data-theme="dark"] {
-            --bg-primary: #1a1a1a;
-            --bg-secondary: #2a2a2a;
-            --text-primary: #e0e0e0;
-            --text-secondary: #b0b0b0;
-            --border-primary: #e0e0e0;
-            --border-secondary: #555555;
-            --highlight-bg: #333300;
-            --highlight-border: #cccc00;
-            --counter-bg: rgba(255, 255, 255, 0.9);
-            --counter-text: #000000;
-            --shadow: rgba(0,0,0,0.5);
-            --shadow-dark: rgba(0,0,0,0.5);
-        }
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        h1 {
-            text-align: center;
-            border-bottom: 2px solid var(--border-primary);
-            padding-bottom: 10px;
-        }
-        h2 {
-            margin-top: 25px;
-            color: var(--text-primary);
-        }
-        h3 {
-            margin-top: 20px;
-            color: var(--text-secondary);
-        }
-        p {
-            margin: 10px 0;
-            text-align: justify;
-        }
-        .evidence {
-            background-color: var(--bg-secondary);
-            padding: 15px;
-            margin: 15px 0;
-            border-left: 3px solid var(--text-secondary);
-        }
-        .important {
-            background-color: var(--highlight-bg);
-            padding: 15px;
-            margin: 15px 0;
-            border-left: 3px solid var(--highlight-border);
-        }
-        .screenshot {
-            display: block;
-            max-width: 700px;
-            width: 100%;
-            height: auto;
-            margin: 15px auto;
-            border: 1px solid var(--border-secondary);
-            box-shadow: 0 2px 4px var(--shadow);
-        }
-        .evidence-header {
-            cursor: pointer;
-            user-select: none;
-            font-weight: bold;
-            padding: 12px 8px;
-            margin: -15px -15px 0 -15px;
-            background-color: var(--bg-secondary);
-            border-bottom: 2px solid var(--border-secondary);
-            transition: background-color 0.2s;
-        }
-        .evidence-header:hover {
-            background-color: color-mix(in srgb, var(--bg-secondary) 90%, var(--text-primary) 10%);
-        }
-        .expand-arrow {
-            display: inline-block;
-            margin-right: 8px;
-            transition: transform 0.3s ease;
-            font-size: 16px;
-            color: var(--text-secondary);
-        }
-        .expand-arrow.expanded {
-            transform: rotate(90deg);
-        }
-        .image-count, .extra, .theme-text {
-            font-weight: normal;
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-left: 8px;
-        }
-        .evidence-preview {
-            position: relative;
-            max-height: 150px;
-            overflow: hidden;
-            margin: 15px 0 0 0;
-            transition: max-height 0.3s ease, opacity 0.3s ease;
-        }
-        .evidence-preview.hidden {
-            max-height: 0;
-            opacity: 0;
-        }
-        .preview-image {
-            display: block;
-            max-width: 100%;
-            width: 100%;
-            height: auto;
-        }
-        .fade-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 80px;
-            background: linear-gradient(to bottom, transparent 0%, var(--bg-secondary) 100%);
-            pointer-events: none;
-        }
-        .evidence-content {
-            display: none;
-            margin-top: 10px;
-            max-height: 600px;
-            overflow-y: auto;
-            border: 2px solid var(--border-secondary);
-            border-radius: 4px;
-            background-color: var(--bg-primary);
-            padding: 10px;
-            position: relative;
-            box-shadow: inset 0 10px 15px -10px var(--shadow);
-        }
-        .evidence-content.show {
-            display: block;
-        }
-        .evidence-content::-webkit-scrollbar {
-            width: 12px;
-        }
-        .evidence-content::-webkit-scrollbar-track {
-            background: color-mix(in srgb, var(--bg-primary) 50%, var(--bg-secondary) 50%);
-            border-radius: 10px;
-        }
-        .evidence-content::-webkit-scrollbar-thumb {
-            background: var(--text-secondary);
-            border-radius: 10px;
-        }
-        .evidence-content::-webkit-scrollbar-thumb:hover {
-            background: var(--text-primary);
-        }
-        .scroll-hint {
-            text-align: center;
-            padding: 8px;
-            background-color: var(--highlight-bg);
-            border: 1px solid var(--highlight-border);
-            border-radius: 4px;
-            margin-bottom: 10px;
-            font-size: 14px;
-            color: var(--text-primary);
-            font-weight: bold;
-        }
-        .end-hint {
-            text-align: center;
-            padding: 8px;
-            background-color: var(--bg-secondary);
-            border: 1px solid var(--border-secondary);
-            border-radius: 4px;
-            margin-top: 10px;
-            font-size: 14px;
-            color: var(--text-secondary);
-            font-style: italic;
-        }
-        .audio-container {
-            background-color: color-mix(in srgb, var(--bg-secondary) 100%, transparent 20%);
-            border: 1px solid var(--border-secondary);
-            border-radius: 4px;
-            padding: 12px;
-            margin: 10px 0;
-        }
-        .audio-player {
-            width: 100%;
-            margin-top: 8px;
-        }
-        .counter-container {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background-color: var(--counter-bg);
-            color: var(--counter-text);
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 16px;
-            z-index: 1000;
-            box-shadow: 0 4px 12px var(--shadow-dark);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-width: 200px;
-        }
-        .theme-toggle {
-            background: none;
-            border: 2px solid currentColor;
-            color: inherit;
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .theme-toggle:hover {
-            background-color: currentColor;
-            color: var(--counter-bg);
-            transform: scale(1.05);
-        }
-    
-
-        /* Performance */
-        img {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .screenshot {
-            background: var(--bg-secondary);
-            min-height: 100px;
-        }
-
-        /* Loading state */
-        img[data-src]:not([data-loaded="true"]) {
-            opacity: 0.5;
-        }
-
-        img[data-loaded="true"] {
-            opacity: 1;
-            transition: opacity 0.3s;
-        }
-
-        /* Mobile */
-        @media (max-width: 768px) {
-            body {
-                overflow-x: hidden !important;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .counter-container {
-                position: fixed;
-                top: 5px;
-                left: 5px;
-                padding: 6px 10px;
-                font-size: 11px;
-                max-width: calc(100% - 20px);
-                z-index: 9999;
-                flex-direction: column;
-                gap: 4px;
-            }
-
-            .screenshot, .preview-image {
-                max-width: 100% !important;
-                width: 100% !important;
-            }
-
-            .evidence-content {
-                max-height: 60vh !important;
-            }
-
-            h1 {
-                font-size: 20px;
-                margin-top: 60px;
-            }
-
-            h2 { font-size: 17px; }
-            p, li { font-size: 14px; }
-            .evidence-header { font-size: 13px; }
-        }
-    </style>
+  
 	<script>
 	// Theme toggle
 	document.documentElement.setAttribute('data-theme', 'dark');
@@ -806,6 +516,337 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 
+    <h2>Timeline of Events</h2>
+	
+    <div class="important">
+        <strong>Key Issues:</strong>
+        <ul>
+            <li>Repeated violation of trust by bringing up my mental health and medication</li>
+            <li>Pattern of lying and spreading misinformation</li>
+            <li>Admitted to prolonged harassment disguised as "pranks"</li>
+            <li>Zero attempts at mediation or resolution</li>
+            <li>Established reputation for exaggerating situations with half-truths</li>
+        </ul>
+    </div>
+
+    <h3>Initial Incident - The Display Name "Prank"</h3>
+    <p>David changed his display name to "Knew" (my name), making everything he said appear as if I was saying it. This deeply bothered me, especially because:</p>
+    <ul>
+        <li>I had explicitly told him TWICE not to do this prank</li>
+        <li>At the time, I was having issues with my anti-depressants, having forgotten to take them for over 6 hours</li>
+        <li>I was extremely emotional and vulnerable</li>
+        <li>I had warned Chuchu weeks prior that missing medication could cause problems</li>
+    </ul>
+
+    <div class="important">
+        <strong>CRITICAL POINT #1:</strong> When I explained I had forgotten my anti-depressants and apologized for being upset, David would later dismiss it as "making excuses" and tell everyone this. This was the first time he showed complete disregard for my mental health after I trusted him with this private medical information.
+    </div>
+
+    <p>David continued this "prank" for days, saying suggestive and gross things while pretending to be me. I repeatedly asked him to stop. He claimed he couldn't change his display name back and had to wait a week. This was a lie -- Tgfg discovered early on that you can reset your display name at any time by simply setting it to your username.</p>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="loadEvidence('evidence-1')" id="evidence-1-header">
+            <span class="expand-arrow" id="evidence-1-arrow">►</span>
+            <strong>Evidence - Display Name Conversation:</strong>
+            <span class="image-count">0 screenshots</span>
+        </div>
+        <div class="evidence-preview" id="evidence-1-preview" id="evidence-1-preview">
+            <img src="https://github.com/Knewest/knewest.github.io/releases/download/Files2/evidence_009.png" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        
+        </div>
+    </div>
+    
+    <p>David dragged this out for days, forcing me to deal with his behavior simply because he "couldn't figure out" how to reset his display name after being told exactly how to do it.</p>
+
+    <h3>The Unadding</h3>
+    <p>After approximately two weeks of no issues, David suddenly removed me from his contacts, but deliberately made it known to others without informing me directly. He told Poke, Tgfg, and Chuchu why he did this, but specifically instructed them not to tell me. In retrospect, this appears to have been an intentional attempt to make me think everyone hated me.</p>
+
+    <h3>Cryptic Reasoning and Contradictions</h3>
+    <p>When asked why he unadded me, David's reasons kept changing:</p>
+    <ul>
+        <li>First claim: "jealousy" (cryptic and vague)</li>
+        <li>Later claim: He wanted the same treatment I was giving Chuchu</li>
+        <li>He accused me of giving his gifts to Chuchu (which never happened)</li>
+        <li>Eventually: It was all "just a prank"</li>
+    </ul>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="loadEvidence('evidence-2')" id="evidence-2-header">
+            <span class="expand-arrow" id="evidence-2-arrow">►</span>
+            <strong>Evidence - What Tgfg/Nezu was told by David:</strong>
+            <span class="image-count">0 screenshots</span>
+        </div>
+        <div class="evidence-preview" id="evidence-2-preview" id="evidence-2-preview">
+            <img src="https://github.com/Knewest/knewest.github.io/releases/download/Files2/evidence_012.png" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        
+        </div>
+    </div>
+
+    <h3>David's Established Reputation</h3>
+    <p>David had already gained a reputation within the friend group as a liar and drama stirrer. This wasn't just my observation -- others in the group had noticed this pattern.</p>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="loadEvidence('evidence-3')" id="evidence-3-header">
+            <span class="expand-arrow" id="evidence-3-arrow">►</span>
+            <strong>Evidence - Group discussion about David's reputation:</strong>
+            <span class="image-count">0 screenshots</span>
+        </div>
+        <div class="evidence-preview" id="evidence-3-preview" id="evidence-3-preview">
+            <img src="https://github.com/Knewest/knewest.github.io/releases/download/Files2/evidence_014.png" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        
+        </div>
+    </div>
+    
+    <div class="context-note">
+        <strong>David's Potential Ulterior Motives - TDMX Dual Wield Game-Pass:</strong>
+        <p>During the group discussion about David's reputation documented above, I brought up that David may have had ulterior motive for his behavior. David brought up the dual wield game-pass in TDMX (a game) three times during our interactions, which I repeatedly ignored. This happened just before the conflict, so the timing suggests that David's anger and subsequent behavior may have been partially motivated by the fact that I did not purchase this game-pass for him, despite his repeated requests and that I had already purchased him faster mining and VIP. This adds another layer to understanding David's true motivations -- it wasn't just about attention or perceived slights, but potentially about not getting what he wanted materially, which lines up with his later claims of wanting to be treated the same as Chuchu (whom I was spoiling), and earlier claims of 'jealously'.</p>
+    </div>
+
+<h3>Poke's Conversation with David</h3>
+    <p>A day or two later, Poke spoke with David and forwarded the information to me. The reasoning completely contradicted the stated issues before. The main takeaway from this conversation was that David wanted special treatment and felt entitled to the same level of attention I gave Chuchu. He also falsely believed I was giving his gifts (cheap items he gave me, which I used for trading) to Chuchu. I never did this. I used them as intended for trading to get other items I wanted.</p>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="loadEvidence('evidence-5')" id="evidence-5-header">
+            <span class="expand-arrow" id="evidence-5-arrow">►</span>
+            <strong>Evidence - Poke's conversation with David:</strong>
+            <span class="image-count">0 screenshots</span>
+        </div>
+        <div class="evidence-preview" id="evidence-5-preview" id="evidence-5-preview">
+            <img src="https://github.com/Knewest/knewest.github.io/releases/download/Files2/evidence_017.png" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        
+        </div>
+    </div>
+
+    <h3>Spreading Misinformation</h3>
+    <p>David actively lied to Tgfg about what was said in our DMs. I had to provide screenshots to prove what actually happened. This was when I started documenting everything because I couldn't trust David to tell the truth.</p>
+
+    <div class="important">
+        <strong>CRITICAL POINT #2:</strong> David was caught lying about the content of our private conversations to mutual friends, forcing me to defend myself with evidence.
+    </div>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="loadEvidence('evidence-6')" id="evidence-6-header">
+            <span class="expand-arrow" id="evidence-6-arrow">►</span>
+            <strong>Evidence - DMs with Tgfg showing the full context:</strong>
+            <span class="image-count">0 screenshots</span>
+        </div>
+        <div class="evidence-preview" id="evidence-6-preview" id="evidence-6-preview">
+            <img src="https://github.com/Knewest/knewest.github.io/releases/download/Files2/evidence_030.png" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        
+        </div>
+    </div>
+    <div class="evidence">
+        <div class="evidence-header" onclick="loadEvidence('evidence-7')" id="evidence-7-header">
+            <span class="expand-arrow" id="evidence-7-arrow">►</span>
+            <strong>Evidence - Proof David was lying about our DMs:</strong>
+            <span class="image-count">0 screenshots</span>
+        </div>
+        <div class="evidence-preview" id="evidence-7-preview" id="evidence-7-preview">
+            <img src="https://github.com/Knewest/knewest.github.io/releases/download/Files2/evidence_038.png" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        
+        </div>
+    </div>
+
+    <h3>The Admission: "It Was All a Prank"</h3>
+    <p>After being confronted with evidence of his lies, David joined again and started another argument. In this conversation, he admitted that everything he had done -- including involving Tgfg and affecting his mental wellbeing -- was all "a prank."</p>
+
+    <div class="important">
+        <strong>CRITICAL ADMISSION:</strong> David confessed that over a week of manipulation, lying, harassment, and involving mutual friends was all deliberate and intended as "a prank."
+    </div>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="loadEvidence('evidence-8')" id="evidence-8-header">
+            <span class="expand-arrow" id="evidence-8-arrow">►</span>
+            <strong>Evidence - Argument where David admits it was "a prank":</strong>
+            <span class="image-count">0 screenshots</span>
+        </div>
+        <div class="evidence-preview" id="evidence-8-preview" id="evidence-8-preview">
+            <img src="https://github.com/Knewest/knewest.github.io/releases/download/Files2/evidence_041.png" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        
+        </div>
+    </div>
+
+    <p>During this argument, I returned all items David had ever gifted me, and more, to end any claim he had over me.</p>
+
+    <h3>External Perspective</h3>
+    <p>I discussed what happened with another friend at the time, who validated my concerns about David's behavior.</p>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="loadEvidence('evidence-9')" id="evidence-9-header">
+            <span class="expand-arrow" id="evidence-9-arrow">►</span>
+            <strong>Evidence - Discussion with friend about David's behavior:</strong>
+            <span class="image-count">0 screenshots</span>
+        </div>
+        <div class="evidence-preview" id="evidence-9-preview" id="evidence-9-preview">
+            <img src="https://github.com/Knewest/knewest.github.io/releases/download/Files2/evidence_065.png" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        
+        </div>
+    </div>
+
+    <h3>Ongoing Harassment and Badmouthing</h3>
+    <p>David did not stop after admitting his behavior was "a prank." He has continued to:</p>
+    <ul>
+        <li>Bring up these incidents to anyone who will listen</li>
+        <li>Contradict himself repeatedly</li>
+        <li>Spread rumors and misinformation about me</li>
+        <li>Contact my friends uninvited to talk about me</li>
+    </ul>
+
+    <div class="important">
+        <strong>CRITICAL POINT #3:</strong> After weeks of no contact, David reached out to Chuchu unannounced specifically to talk about me, continuing his pattern of badmouthing rather than attempting any form of mediation or resolution.
+    </div>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="loadEvidence('evidence-10')" id="evidence-10-header">
+            <span class="expand-arrow" id="evidence-10-arrow">►</span>
+            <strong>Evidence - Chuchu's comments about David contacting her:</strong>
+            <span class="image-count">0 screenshots</span><span class="extra">  //　3 voice messages</span>
+        </div>
+        <div class="evidence-preview" id="evidence-10-preview" id="evidence-10-preview">
+            <img src="https://github.com/Knewest/knewest.github.io/releases/download/Files2/evidence_069.png" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        
+        </div>
+    </div>
+
+    <h3>Pattern of Bringing Up Mental Health</h3>
+    <p>Throughout multiple arguments and conversations with others, David has repeatedly brought up my mental health and medication -- information I shared with him in confidence. He has done this even after being explicitly asked to stop.</p>
+
+    <div class="important">
+        <strong>CRITICAL POINT #4:</strong> David has weaponized private medical information about my mental health and anti-depressant medication in arguments and conversations with others, showing a complete disregard for my privacy and wellbeing even after being asked to stop.
+    </div>
+
+    <div class="evidence">
+        <div class="evidence-header" onclick="loadEvidence('evidence-11')" id="evidence-11-header">
+            <span class="expand-arrow" id="evidence-11-arrow">►</span>
+            <strong>Evidence - Additional arguments showing the pattern:</strong>
+            <span class="image-count">0 screenshots</span>
+        </div>
+        <div class="evidence-preview" id="evidence-11-preview" id="evidence-11-preview">
+            <img src="https://github.com/Knewest/knewest.github.io/releases/download/Files2/evidence_073.png" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        
+        </div>
+    </div>
+
+    
+    <h2>Why Do They Keep Hurting Me?</h2>
+
+    <p>I don't know, and I wish I knew the answer. I ask so little of any of them, yet they cannot stop. People intimately aware of the problems I have experienced with David, Chuchu, and Kayci also cannot understand why any of them are so seemingly eager to hurt me more when they already have done so much to hurt me.</p>
+
+    <h3>Dina's Comments</h3>
+    <div class="evidence">
+        <div class="evidence-header" onclick="loadEvidence('evidence-dina')" id="evidence-dina-header">
+            <span class="expand-arrow" id="evidence-dina-arrow">►</span>
+            <span>Dina's Comments</span>
+            <span class="image-count">0 screenshots</span>
+        </div>
+        <div class="evidence-preview" id="evidence-dina-preview" id="evidence-dina-preview">
+            <img src="https://github.com/Knewest/knewest.github.io/releases/download/Files2/evidence_103.png" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        
+        </div>
+    </div>
+
+    <h3>Tgfg/Nezu's Comments</h3>
+    <div class="evidence">
+        <div class="evidence-header" onclick="loadEvidence('evidence-tgfg')" id="evidence-tgfg-header">
+            <span class="expand-arrow" id="evidence-tgfg-arrow">►</span>
+            <span>Tgfg/Nezu's Comments</span>
+            <span class="image-count">0 screenshots</span>
+        </div>
+        <div class="evidence-preview" id="evidence-tgfg-preview" id="evidence-tgfg-preview">
+            <img src="https://github.com/Knewest/knewest.github.io/releases/download/Files2/evidence_106.png" class="preview-image" alt="Preview">
+            <div class="fade-overlay"></div>
+        </div>
+        
+        </div>
+    </div>
+<h2>Summary of David's Actions</h2>
+
+    <p>David has engaged in a sustained pattern of harmful behavior that includes:</p>
+
+    <ol>
+        <li><strong>Deliberate manipulation:</strong> Admittedly engaging in behavior designed to hurt me over an extended period under the guise of "pranks"</li>
+        <li><strong>Violation of trust:</strong> Repeatedly bringing up private medical information (mental health and medication) even after being asked to stop</li>
+        <li><strong>Lying and misinformation:</strong> Actively spreading false information to mutual friends, requiring me to defend myself with evidence</li>
+        <li><strong>Contradictory explanations:</strong> Changing his story multiple times about his motivations and actions</li>
+        <li><strong>Zero attempt at mediation:</strong> Despite all of this, David has never once attempted to actually talk things out, fix the situation, or apologize genuinely</li>
+        <li><strong>Ongoing harassment:</strong> Continuing to badmouth me to anyone who will listen, including reaching out to my friends uninvited</li>
+    </ol>
+
+    <h2>Conclusion</h2>
+
+    <p>The evidence shows a clear pattern: David cannot be trusted. He has a documented reputation for lying, exaggerating situations with half-truths, and stirring up drama. Most concerning is his repeated violation of my trust by using my mental health and medication as ammunition, even after being explicitly told this is not okay.</p>
+
+    <p>David has had countless opportunities to mediate, apologize, and work toward resolution. He has chosen not to. Instead, he continues to talk about me behind my back to anyone who will listen.</p>
+
+    <p><strong>I need David to stop. He needs to stop bringing up my private medical information. He needs to stop lying about me. He needs to stop trying to turn people against me. Just stop.</strong></p>
+
+	<footer style="border-top:1px solid #222;">
+
+	    <h2>The Chuchu, Kayci and David Connection</h2>
+
+    <p>About a month or more ago from writing this (November 2025), Chuchu decided to cut me off. She did this in a very irresponsible way, which she has since refused to acknowledge. Rather than addressing her actions, she now goes out of her way to deliberately hurt me, with Kayci supporting this behavior despite knowing in detail how much of a liar Chuchu has become.</p>
+
+    <p>The connection between David, Chuchu, and Kayci became clear when David started spreading new lies that could only have come from Chuchu. In the January 2026 screenshots from Poke, David claims I use my diagnosed ASD to "win every argument" -- information he says came from Chuchu.</p>
+
+    <div class="important">
+        <strong>This is completely false.</strong> I have no idea what Chuchu is talking about. I am genuinely confident that if you were to ask anyone who actually knows me, they would tell you I refuse to let people justify my behavior with my ASD. I detest that so much. I explicitly tell people to treat me as a normal person, not to make excuses for me.
+    </div>
+
+    <p>This is the pattern with these people: They say one lie with a few words, and then force me to respond with 100 more words of explanation and proof. It's not right, and this is purely designed to hurt me for whatever benefit they get out of it.</p>
+
+    <p>The comment David made about Kayci implies that Chuchu told her very false side of events to David, while knowing exactly how much David will twist and spread misinformation. Chuchu knows David's pattern of behavior -- she was there for much of what's documented here -- yet she chose to feed him lies anyway.</p>
+
+    <p>It's unfortunate, but I am now forced to document Chuchu's behavior separately, and by extension Kayci's role in enabling and supporting what Chuchu does.</p>
+	
+	<p>While the primary focus of this document is David's behavior, it's important to note the connection between David's actions and Chuchu's involvement. As documented in the evidence above, Chuchu has shown a pattern of:</p>
+
+    <ul>
+        <li>Providing David with information that he then weaponized against me</li>
+        <li>Supporting David's narrative despite being aware of the full context</li>
+        <li>Deliberately hurting me while claiming innocence</li>
+    </ul>
+
+    <p>Chuchu's role is significant because she had firsthand knowledge of what actually happened, yet chose to feed David false or misleading information anyway. This suggests either a deliberate attempt to manipulate the situation, or a reckless disregard for the harm her actions would cause.</p>
+
+    <p>A separate, comprehensive document addressing Chuchu's specific behavior and her enabler Kayci will be created to provide the same level of documentation and clarity for that separate but connected issue.</p>
+	</footer>
+    <div class="evidence">
+        <div class="evidence-header" style="background: #2c3e50; cursor: default;">
+            <strong>Related Documentation:</strong>
+        </div>
+        <div style="padding: 15px; background: #ecf0f1;">
+            <p style="margin: 0;"><strong>📄 <a href="https://knewest.github.io/TellChuchuToTakeResponsibility.html" style="color: #3498db; text-decoration: none;">Tell Chuchu To Take Responsibility</a></strong> <br> A comprehensive document detailing Chuchu's pattern of lying, refusal to take responsibility, and deliberate attempts to hurt me, with Kayci's role in supporting this behavior.</p>
+        </div>
+    </div>
+
+	<footer style="text-align:center;padding:20px;color:#888;font-size:12px;border-top:1px solid #222;">
+	  <div style="margin-bottom:8px;">
+		Copyright © 2025-2026 Knew
+	  </div>
+	  <div style="font-size:11px;color:#666;">This document is not licensed under anything. Feel free to use it however you like.</div>
+	</footer>
 
 
 
