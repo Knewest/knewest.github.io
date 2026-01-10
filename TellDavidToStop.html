@@ -1,5 +1,5 @@
 <head> 
-    <meta charset="UTF-8">
+    <meta charset="UTF-16-BOM-LE">
     <title>Tell David To Stop</title>
     <style>
         :root {
@@ -105,7 +105,7 @@
             font-weight: normal;
             color: var(--text-secondary);
             font-size: 14px;
-            margin-left: 8px;
+            margin-left: 0.13rem;
         }
         .evidence-preview {
             position: relative;
@@ -217,12 +217,12 @@
             border: 2px solid currentColor;
             color: inherit;
             padding: 6px 12px;
-            border-radius: 20px;
+            border-radius: 5px;
             cursor: pointer;
             font-size: 14px;
             font-weight: 500;
             transition: all 0.3s ease;
-            display: flex;
+            display: inline;
             align-items: center;
             gap: 6px;
         }
@@ -301,11 +301,11 @@
 		if (currentTheme === 'dark') {
 			document.documentElement.setAttribute('data-theme', 'light');
 			currentTheme = 'light';
-			document.querySelector('.theme-text').textContent = 'Light';
+			document.querySelector('.theme-text').textContent = 'Light Theme';
 		} else {
 			document.documentElement.setAttribute('data-theme', 'dark');
 			currentTheme = 'dark';
-			document.querySelector('.theme-text').textContent = 'Dark';
+			document.querySelector('.theme-text').textContent = 'Darker Theme';
 		}
 	}
 
@@ -541,9 +541,9 @@ const evidenceData = {
             "Chuchu's GC comment 3"
         ],
         "audios": [
-            "https://knewest.github.io/evidence_assets/ChuVoiceMessage1.ogg",
-            "https://knewest.github.io/evidence_assets/ChuVoiceMessage2.ogg",
-            "https://knewest.github.io/evidence_assets/ChuVoiceMessage3.ogg"
+            "https://github.com/Knewest/knewest.github.io/releases/download/Files2/ChuVoiceMessage1.ogg",
+            "https://github.com/Knewest/knewest.github.io/releases/download/Files2/ChuVoiceMessage2.ogg",
+            "https://github.com/Knewest/knewest.github.io/releases/download/Files2/ChuVoiceMessage3.ogg"
         ],
         "has_audio": true
     },
@@ -680,7 +680,7 @@ function updateEvidenceCounters() {
   }
 }
 
-// Load evidence content dynamically when clicked
+// Load evidence on tab expansion
 function loadEvidence(id) {
   const arrow = document.getElementById(id + '-arrow');
   const preview = document.getElementById(id + '-preview');
@@ -702,7 +702,7 @@ function loadEvidence(id) {
     return;
   }
 
-    // Create and inject the content
+    // Create and inject the content using the metadata
     const data = evidenceData[id];
     if (!data) return;
 
@@ -740,17 +740,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 </head><body>
-        <span class="extra">Total evidence: <span id="image-count">112</span></span>
-        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
-            <span class="theme-text">Dark</span>
-        </button>
-
-    <h1>Tell David To Stop</h1>
-
+	<h1>Tell David To Stop<br><span class="extra">Total evidence: <span id="image-count">112</span></span><br><button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"><span class="theme-text" style="text-align:center;">Dark Theme</span></button></h1>
     <h2>Overview</h2>
     <p>This document outlines a pattern of harmful behavior by David, including manipulation, harassment, spreading misinformation, and repeatedly bringing up private medical information (mental health and medication) that was shared in confidence -- even after being explicitly asked to stop. Despite multiple attempts to resolve issues, David has refused to mediate or fix things, instead choosing to badmouth me to anyone who will listen. His actions have been characterized by contradictory statements, half-truths, and what he himself later admitted was an extended "prank" designed to hurt me.</p>
 
-    <h2>What Prompted The Release of This Documentation</h2>
+    <br><br><h2>What Prompted The Release of This Documentation</h2>
 
     <p>This document was created because David has continued to spread lies and misinformation about me, even after being repeatedly asked to stop. As of January 5-7, 2026, David was caught making additional false claims to mutual friends, demonstrating that his pattern of harmful behavior has not stopped.</p>
 
@@ -800,7 +794,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 
-    <h2>Timeline of Events</h2>
+    <br><br><h2>Timeline of Events</h2>
 	
     <div class="important">
         <strong>Key Issues:</strong>
@@ -813,7 +807,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </ul>
     </div>
 
-    <h3>Initial Incident - The Display Name "Prank"</h3>
+    <br><h3>Initial Incident - The Display Name "Prank"</h3>
     <p>David changed his display name to "Knew" (my name), making everything he said appear as if I was saying it. This deeply bothered me, especially because:</p>
     <ul>
         <li>I had explicitly told him TWICE not to do this prank</li>
@@ -823,7 +817,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </ul>
 
     <div class="important">
-        <strong>CRITICAL POINT #1:</strong> When I explained I had forgotten my anti-depressants and apologized for being upset, David would later dismiss it as "making excuses" and tell everyone this. This was the first time he showed complete disregard for my mental health after I trusted him with this private medical information.
+        <strong>MY POINT #1:</strong> When I explained I had forgotten my anti-depressants and apologized for being upset, David would later dismiss it as "making excuses" and tell everyone this. This was the first time he showed complete disregard for my mental health after I trusted him with this private medical information.
     </div>
 
     <p>David continued this "prank" for days, saying suggestive and gross things while pretending to be me. I repeatedly asked him to stop. He claimed he couldn't change his display name back and had to wait a week. This was a lie -- Tgfg discovered early on that you can reset your display name at any time by simply setting it to your username.</p>
@@ -844,10 +838,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     <p>David dragged this out for days, forcing me to deal with his behavior simply because he "couldn't figure out" how to reset his display name after being told exactly how to do it.</p>
 
-    <h3>The Unadding</h3>
+    <br><h3>The Unadding</h3>
     <p>After approximately two weeks of no issues, David suddenly removed me from his contacts, but deliberately made it known to others without informing me directly. He told Poke, Tgfg, and Chuchu why he did this, but specifically instructed them not to tell me. In retrospect, this appears to have been an intentional attempt to make me think everyone hated me.</p>
 
-    <h3>Cryptic Reasoning and Contradictions</h3>
+    <br><h3>Cryptic Reasoning and Contradictions</h3>
     <p>When asked why he unadded me, David's reasons kept changing:</p>
     <ul>
         <li>First claim: "jealousy" (cryptic and vague)</li>
@@ -870,7 +864,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 
-    <h3>David's Established Reputation</h3>
+    <br><h3>David's Established Reputation</h3>
     <p>David had already gained a reputation within the friend group as a liar and drama stirrer. This wasn't just my observation -- others in the group had noticed this pattern.</p>
 
     <div class="evidence">
@@ -892,7 +886,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <p>During the group discussion about David's reputation documented above, I brought up that David may have had ulterior motive for his behavior. David brought up the dual wield game-pass in TDMX (a game) three times during our interactions, which I repeatedly ignored. This happened just before the conflict, so the timing suggests that David's anger and subsequent behavior may have been partially motivated by the fact that I did not purchase this game-pass for him, despite his repeated requests and that I had already purchased him faster mining and VIP. This adds another layer to understanding David's true motivations -- it wasn't just about attention or perceived slights, but potentially about not getting what he wanted materially, which lines up with his later claims of wanting to be treated the same as Chuchu (whom I was spoiling), and earlier claims of 'jealously'.</p>
     </div>
 
-<h3>Poke's Conversation with David</h3>
+<br><h3>Poke's Conversation with David</h3>
     <p>A day or two later, Poke spoke with David and forwarded the information to me. The reasoning completely contradicted the stated issues before. The main takeaway from this conversation was that David wanted special treatment and felt entitled to the same level of attention I gave Chuchu. He also falsely believed I was giving his gifts (cheap items he gave me, which I used for trading) to Chuchu. I never did this. I used them as intended for trading to get other items I wanted.</p>
 
     <div class="evidence">
@@ -909,11 +903,11 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 
-    <h3>Spreading Misinformation</h3>
+    <br><h3>Spreading Misinformation</h3>
     <p>David actively lied to Tgfg about what was said in our DMs. I had to provide screenshots to prove what actually happened. This was when I started documenting everything because I couldn't trust David to tell the truth.</p>
 
     <div class="important">
-        <strong>CRITICAL POINT #2:</strong> David was caught lying about the content of our private conversations to mutual friends, forcing me to defend myself with evidence.
+        <strong>MY POINT #2:</strong> David was caught lying about the content of our private conversations to mutual friends, forcing me to defend myself with evidence.
     </div>
 
     <div class="evidence">
@@ -943,11 +937,11 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 
-    <h3>The Admission: "It Was All a Prank"</h3>
+    <br><h3>The Admission: "It was all a prank"</h3>
     <p>After being confronted with evidence of his lies, David joined again and started another argument. In this conversation, he admitted that everything he had done -- including involving Tgfg and affecting his mental wellbeing -- was all "a prank."</p>
 
     <div class="important">
-        <strong>CRITICAL ADMISSION:</strong> David confessed that over a week of manipulation, lying, harassment, and involving mutual friends was all deliberate and intended as "a prank."
+        <strong>HIS ADMISSION:</strong> David confessed that over a week of manipulation, lying, harassment, and involving mutual friends was all deliberate and intended as "a prank."
     </div>
 
     <div class="evidence">
@@ -966,7 +960,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     <p>During this argument, I returned all items David had ever gifted me, and more, to end any claim he had over me.</p>
 
-    <h3>External Perspective</h3>
+    <br><h3>External Perspective</h3>
     <p>I discussed what happened with another friend at the time, who validated my concerns about David's behavior.</p>
 
     <div class="evidence">
@@ -983,7 +977,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 
-    <h3>Ongoing Harassment and Badmouthing</h3>
+    <br><h3>Ongoing Harassment and Badmouthing</h3>
     <p>David did not stop after admitting his behavior was "a prank." He has continued to:</p>
     <ul>
         <li>Bring up these incidents to anyone who will listen</li>
@@ -993,7 +987,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </ul>
 
     <div class="important">
-        <strong>CRITICAL POINT #3:</strong> After weeks of no contact, David reached out to Chuchu unannounced specifically to talk about me, continuing his pattern of badmouthing rather than attempting any form of mediation or resolution.
+        <strong>MY POINT #3:</strong> After weeks of no contact, David reached out to Chuchu unannounced specifically to talk about me, continuing his pattern of badmouthing rather than attempting any form of mediation or resolution.
     </div>
 
     <div class="evidence">
@@ -1010,11 +1004,11 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 
-    <h3>Pattern of Bringing Up Mental Health</h3>
+    <br><h3>Pattern of Bringing Up Mental Health</h3>
     <p>Throughout multiple arguments and conversations with others, David has repeatedly brought up my mental health and medication -- information I shared with him in confidence. He has done this even after being explicitly asked to stop.</p>
 
     <div class="important">
-        <strong>CRITICAL POINT #4:</strong> David has weaponized private medical information about my mental health and anti-depressant medication in arguments and conversations with others, showing a complete disregard for my privacy and wellbeing even after being asked to stop.
+        <strong>MY POINT #4:</strong> David has weaponized private medical information about my mental health and anti-depressant medication in arguments and conversations with others, showing a complete disregard for my privacy and wellbeing even after being asked to stop.
     </div>
 
     <div class="evidence">
@@ -1032,11 +1026,10 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 
     
-    <h2>Why Do They Keep Hurting Me?</h2>
+    <br><br><h2>Why Do They Keep Hurting Me?</h2>
 
-    <p>I don't know, and I wish I knew the answer. I ask so little of any of them, yet they cannot stop. People intimately aware of the problems I have experienced with David, Chuchu, and Kayci also cannot understand why any of them are so seemingly eager to hurt me more when they already have done so much to hurt me.</p>
+    <p>I don't know, and I wish I knew the answer. I ask so little of any of them, yet they cannot stop. People intimately aware of the problems I have experienced with David, Chuchu, and Kayci also cannot understand why any of them are so seemingly eager to hurt me more when they already have done so much to hurt me. To prove my point, I have been given permission to share a few of the thoughts of others who have been there from the very start, or are intimately aware of the events that happened.</p>
 
-    <h3>Dina's Comments</h3>
     <div class="evidence">
         <div class="evidence-header" onclick="loadEvidence('evidence-dina')" id="evidence-dina-header">
             <span class="expand-arrow" id="evidence-dina-arrow">►</span>
@@ -1051,7 +1044,6 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 
-    <h3>Tgfg/Nezu's Comments</h3>
     <div class="evidence">
         <div class="evidence-header" onclick="loadEvidence('evidence-tgfg')" id="evidence-tgfg-header">
             <span class="expand-arrow" id="evidence-tgfg-arrow">►</span>
@@ -1065,7 +1057,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         </div>
     </div>
-<h2>Summary of David's Actions</h2>
+<br><br><h2>Summary of David's Actions</h2>
 
     <p>David has engaged in a sustained pattern of harmful behavior that includes:</p>
 
@@ -1078,17 +1070,17 @@ document.addEventListener('DOMContentLoaded', function() {
         <li><strong>Ongoing harassment:</strong> Continuing to badmouth me to anyone who will listen, including reaching out to my friends uninvited</li>
     </ol>
 
-    <h2>Conclusion</h2>
+    <br><br><h2>The Overall Point</h2>
 
     <p>The evidence shows a clear pattern: David cannot be trusted. He has a documented reputation for lying, exaggerating situations with half-truths, and stirring up drama. Most concerning is his repeated violation of my trust by using my mental health and medication as ammunition, even after being explicitly told this is not okay.</p>
 
     <p>David has had countless opportunities to mediate, apologize, and work toward resolution. He has chosen not to. Instead, he continues to talk about me behind my back to anyone who will listen.</p>
 
     <p><strong>I need David to stop. He needs to stop bringing up my private medical information. He needs to stop lying about me. He needs to stop trying to turn people against me. Just stop.</strong></p>
-
+	<br><br>
 	<footer style="border-top:1px solid #222;">
 
-	    <h2>The Chuchu, Kayci and David Connection</h2>
+	<h2>The Chuchu, Kayci and David Connection</h2>
 
     <p>About a month or more ago from writing this (November 2025), Chuchu decided to cut me off. She did this in a very irresponsible way, which she has since refused to acknowledge. Rather than addressing her actions, she now goes out of her way to deliberately hurt me, with Kayci supporting this behavior despite knowing in detail how much of a liar Chuchu has become.</p>
 
@@ -1121,7 +1113,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <strong>Related Documentation:</strong>
         </div>
         <div style="padding: 15px; background: #ecf0f1;">
-            <p style="margin: 0;"><strong>📄 <a href="https://knewest.github.io/TellChuchuToTakeResponsibility.html" style="color: #3498db; text-decoration: none;">Tell Chuchu To Take Responsibility</a></strong> <br> A comprehensive document detailing Chuchu's pattern of lying, refusal to take responsibility, and deliberate attempts to hurt me, with Kayci's role in supporting this behavior.</p>
+            <p style="margin: 0;"><strong>📄 <a href="https://knewest.github.io/TellChuchuToTakeAccountability.html" style="color: #3498db; text-decoration: none;">Tell Chuchu To Take Accountability</a></strong> <br> A document that comprehensively details Chuchu's pattern of lying, refusal to take to be held accountable for her misdoings, and deliberate attempts to hurt me for trying to hold her accountable, with Kayci's role in supporting this behavior.</p>
         </div>
     </div>
 
